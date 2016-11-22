@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" type="text/css" href="{{assetsUrl}}/css/main.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
 
-    <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+
+    <!-- MaterializeCss-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+
 
     <script src="{{jsUrl}}"></script>
     <script>
@@ -23,20 +29,48 @@
 <body>
 
 
-<h2>RepoXPlorer</h2>
+<!-- Top -->
+<nav>
+    <div class="nav-wrapper blue">
+        <a href="#" class="brand-logo right">xpLoader</a>
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a href="#createRepoModal" class="modal-trigger">Create</a></li>
+        </ul>
+    </div>
+</nav>
 
+<!-- Create repo modal -->
+<div id="createRepoModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h4>Create repository</h4>
+        <div class="row">
+            <div class="input-field col s12">
+                <label for="createRepoId">Repository id</label>
+                <input id="createRepoId" type="text">
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <label for="createRepoSettings">Repository settings</label>
+                <input id="createRepoSettings" type="text">
+            </div>
+        </div>
+        <div class="row">
+            <button id="createRepoButton" class="waves-effect waves-light btn">Create</button>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+</div>
+
+
+<!-- Main -->
 
 <div class="row">
 
-    <div class="col s4">
-
-        <div class="row">
-            <div id="createRepo" class="input-field col s12">
-                <input id="createRepoInput" type="text" placeholder="<new repository id>">
-                <button id="createRepoButton" class="waves-effect waves-light btn">Create</button>
-            </div>
-        </div>
-
+    <!-- Left pane -->
+    <div class="left-menu col s4">
         <div id="repoSelector" class="row">
             <div id="selectRepo" class="input-field col s12">
                 <select id="selectRepoId" selected>Choose repository</select>
@@ -47,12 +81,14 @@
         <div id="query" class="row">
             <div class="row input-field">
                 <div class="input-field col s12">
-                    <input id="queryInput" type="text" placeholder="<query>" class="validate">
+                    <input id="queryInput" type="text" class="validate">
+                    <label for="queryInput">queryString</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s8">
-                    <input id="querySort" type="text" placeholder="<orderExpr>" class="validate">
+                    <input id="querySort" type="text" class="validate">
+                    <label for="querySort">orderExpr</label>
                 </div>
                 <div class="input-field col s2">
                     <input id="queryCountInput" type="text" value="10" class="validate">
@@ -65,18 +101,30 @@
             </div>
             <div class="row">
                 <div class="input-field col s12">
+                    <input id="queryAggs" type="text" class="validate">
+                    <label for="queryAggs">Aggregations</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
                     <button id="queryButton" class="waves-effect waves-light btn">doQuery</button>
                 </div>
             </div>
         </div>
 
+
     </div>
 
-
+    <!-- Right pane -->
     <div class="col s8">
-        <div id="repoInfo" class="row">
+        <div class="row">
             <div id="repoInfoBox" class="col s12">
             </div>
+        </div>
+        <div id="queryResult" class="row">
+            <div id="queryResultBox" class="col s12">
+            </div>
+
         </div>
     </div>
 

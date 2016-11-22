@@ -2,13 +2,14 @@ var REPO_SELECTOR_ID = "#selectRepoId";
 var REPO_INFO_BOX = "#repoInfoBox";
 
 var CREATE_REPO_BUTTON = '#createRepoButton';
-var CREATE_REPO_INPUT = '#createRepoInput';
+var CREATE_REPO_INPUT = '#createRepoId';
 
 var DELETE_REPO_BUTTON = '#deleteRepoButton';
 
 var QUERY_DIV = '#query';
 var QUERY_BUTTON = '#queryButton';
 var QUERY_INPUT = '#queryInput';
+var QUERY_RESULT_BOX = "#queryResultBox";
 
 var MESSAGE_BOX = '#messageBox';
 
@@ -40,6 +41,7 @@ $(function () {
         doQuery();
     });
 
+    $('.modal').modal();
 });
 
 function isEmpty(str) {
@@ -169,14 +171,12 @@ function doQuery() {
         data: data,
         type: 'GET',
         success: function (result) {
-
+            renderQueryResult(result, $(QUERY_RESULT_BOX));
         }
     });
 }
 
-
 // RENDER STUFF
-
 var renderRepoList = function (result, renderer) {
 
     var html = "";
@@ -199,13 +199,8 @@ var renderRepoInfoBox = function (result, rendered) {
     var repoInfo = result.repoInfo;
 
     var html = "";
-    html += '<div class="card blue-grey lighten-1">';
-    html += '<div class="card-content white-text">';
-    html += '<span class="card-title">' + repoInfo.id + '</span>';
-    html += '<p>';
-
-    html += '<table>';
-    html += '<th>Branch name</th><th>Number of nodes</th><th></th>';
+    html += '<table class="bordered">';
+    html += '<th>Branch</th><th>#nodes</th>';
 
     repoInfo.branchInfo.forEach(function (branch) {
         html += "<tr>";
@@ -214,12 +209,40 @@ var renderRepoInfoBox = function (result, rendered) {
     });
 
     html += '</table>';
-    html += '</p>';
-    html += '</div>';
-    html += '</div>';
 
     rendered.html(html);
 };
+
+var renderQueryResult = function (result, renderer) {
+
+    var html = '<ul class="collapsible" data-collapsible="accordion">';
+
+    result.result.hits.forEach(function (hit) {
+        html = renderQueryHit(html, hit);
+    });
+
+    html += '</ul>';
+    renderer.html(html);
+
+    $('.collapsible').collapsible();
+};
+
+
+function renderQueryHit(html, hit) {
+    html += '<li class="queryResultItem">';
+    html += '<div class="collapsible-header">';
+    html += '<b>' + hit._path + '</b> ( score: ' + hit._score + ' )';
+    html += '</div>';
+    html += '<div class="collapsible-body">';
+    html += '<pre>';
+    html += '<code>';
+    html += JSON.stringify(hit.node, null, 4);
+    html += '</code>';
+    html += '</pre>';
+    html += '</div>';
+    html += '</li>';
+    return html;
+}
 
 var renderMessage = function (result) {
 

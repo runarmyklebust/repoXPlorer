@@ -49,23 +49,18 @@ var getBranchInfo = function (repoId, branch) {
         });
     });
 
-    log.info("GetBranchInfoResult: %s", JSON.stringify(result));
-
     branchInfo.total = result.total;
-
     return branchInfo;
 };
 
-
-var
-    renderError = function (message) {
-        return {
-            contentType: 'application/json',
-            body: {
-                error: message
-            }
+var renderError = function (message) {
+    return {
+        contentType: 'application/json',
+        body: {
+            error: message
         }
-    };
+    }
+};
 
 var runInRepoContext = function (repoId, branch, callback) {
 

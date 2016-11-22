@@ -18,3 +18,12 @@
 .message {
     background-color: darkgreen; /* Red */
 }
+
+.left-menu {
+    height: 100%;
+    box-shadow: 2px 0px 2px #888888;
+}
+
+.queryResultItem {
+    font-size: smaller;
+}

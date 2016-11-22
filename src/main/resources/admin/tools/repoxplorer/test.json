@@ -1,0 +1,54 @@
+{
+  "_id": "0bb1c030-fa44-432f-98e4-4f56b0d99cca",
+  "_name": "0bb1c030-fa44-432f-98e4-4f56b0d99cca",
+  "_path": "/0bb1c030-fa44-432f-98e4-4f56b0d99cca",
+  "_childOrder": "_timestamp DESC",
+  "_indexConfig": {
+    "default": {
+      "decideByType": true,
+      "enabled": true,
+      "nGram": false,
+      "fulltext": false,
+      "includeInAllText": false,
+      "indexValueProcessors": []
+    },
+    "configs": []
+  },
+  "_inheritsPermissions": false,
+  "_permissions": [
+    {
+      "principal": "role:system.admin",
+      "allow": [
+        "READ",
+        "CREATE",
+        "MODIFY",
+        "DELETE",
+        "PUBLISH",
+        "READ_PERMISSIONS",
+        "WRITE_PERMISSIONS"
+      ],
+      "deny": []
+    },
+    {
+      "principal": "role:system.everyone",
+      "allow": [
+        "READ"
+      ],
+      "deny": []
+    }
+  ],
+  "_attachedBinaries": [],
+  "_state": "DEFAULT",
+  "_nodeType": "default",
+  "_versionKey": "cedcb8aec2767cbc8ed20cdde065f2d0ca60df21",
+  "_timestamp": "2016-11-21T22:41:07.372Z",
+  "GATENAVN": "OLAV NYGARDS VEG",
+  "HUSNUMMER": "214.00",
+  "HUSBOKSTAV": "B",
+  "STED": "",
+  "POSTNUMMER": "0688",
+  "POSTSTED": "OSLO",
+  "KOMMUNE": "OSLO",
+  "FYLKE": "OSLO",
+  "LATITUDE": "59.88778032199058,10.85558151265624"
+}
