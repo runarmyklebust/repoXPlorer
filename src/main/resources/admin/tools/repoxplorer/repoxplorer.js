@@ -12,7 +12,10 @@ exports.get = function (req) {
         jsUrl: portal.assetUrl({path: "/js/main.js"}),
         assetsUrl: portal.assetUrl({path: ""}),
         repoLoaderService: getServiceUrl('repo-loader-service'),
-        repoInfoService: getServiceUrl('repo-info-service')
+        repoInfoService: getServiceUrl('repo-info-service'),
+        deleteRepoServiceUrl: getServiceUrl('delete-repo-service'),
+        createRepoServiceUrl: getServiceUrl('create-repo-service'),
+        queryRepoServiceUrl: getServiceUrl('query-repo-service')
     };
 
     return {

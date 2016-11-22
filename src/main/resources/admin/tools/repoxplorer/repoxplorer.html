@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>repoXPlorer</title>
+    <title>RepoXPlorer</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,25 +14,74 @@
     <script>
         var repoLoaderService = '{{repoLoaderService}}';
         var repoInfoService = '{{repoInfoService}}';
+        var deleteRepoServiceUrl = '{{deleteRepoServiceUrl}}';
+        var createRepoServiceUrl = '{{createRepoServiceUrl}}';
+        var queryRepoServiceUrl = '{{queryRepoServiceUrl}}';
     </script>
 
 </head>
 <body>
 
 
-<h2>Repo XPlorer</h2>
+<h2>RepoXPlorer</h2>
 
-<div id="repoSelector" class="row">
-    <div id="selectRepo" class="col s6">
-        <select id="selectRepoId" selected>Choose repository</select>
+
+<div class="row">
+
+    <div class="col s4">
+
+        <div class="row">
+            <div id="createRepo" class="input-field col s12">
+                <input id="createRepoInput" type="text" placeholder="<new repository id>">
+                <button id="createRepoButton" class="waves-effect waves-light btn">Create</button>
+            </div>
+        </div>
+
+        <div id="repoSelector" class="row">
+            <div id="selectRepo" class="input-field col s12">
+                <select id="selectRepoId" selected>Choose repository</select>
+                <button id="deleteRepoButton" class="waves-effect waves-light red btn">Delete</button>
+            </div>
+        </div>
+
+        <div id="query" class="row">
+            <div class="row input-field">
+                <div class="input-field col s12">
+                    <input id="queryInput" type="text" placeholder="<query>" class="validate">
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s8">
+                    <input id="querySort" type="text" placeholder="<orderExpr>" class="validate">
+                </div>
+                <div class="input-field col s2">
+                    <input id="queryCountInput" type="text" value="10" class="validate">
+                    <label for="queryCountInput">count</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="queryStart" type="text" value="0" class="validate">
+                    <label for="queryStart">start</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <button id="queryButton" class="waves-effect waves-light btn">doQuery</button>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
+    <div class="col s8">
+        <div id="repoInfo" class="row">
+            <div id="repoInfoBox" class="col s12">
+            </div>
+        </div>
+    </div>
+
 </div>
 
-
-<div id="repoInfo" class="row">
-    <div id="repoInfoBox" class="col s6">
-    </div>
-</div>
 
 <div id="messageBox" class="row messageBox">
     <span id="repoMessage"></span>

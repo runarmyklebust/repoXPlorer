@@ -1,0 +1,20 @@
+/* The alert message box */
+
+.messageBox {
+    padding: 20px;
+    color: white;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    font-size: large;
+}
+
+.error {
+    background-color: #f44336; /* Red */
+}
+
+.message {
+    background-color: darkgreen; /* Red */
+}

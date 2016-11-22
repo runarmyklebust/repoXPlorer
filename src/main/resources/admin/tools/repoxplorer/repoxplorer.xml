@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <tool xmlns="urn:enonic:xp:model:1.0">
-  <display-name>xpLoader</display-name>
+  <display-name>Repo XPlorer</display-name>
   <description>View repository data</description>
   <allow>
     <principal>role:system.admin</principal>
