@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
+    <!-- prism -->
+    <link href="{{assetsUrl}}/css/prism.css" rel="stylesheet"/>
+    <script src="{{assetsUrl}}/js/prism.js" data-manual></script>
 
     <script src="{{jsUrl}}"></script>
     <script>
@@ -32,7 +35,7 @@
 <!-- Top -->
 <nav>
     <div class="nav-wrapper blue">
-        <a href="#" class="brand-logo right">xpLoader</a>
+        <a href="#" class="brand-logo right">Repo XPlorer</a>
         <ul id="nav-mobile" class="left hide-on-med-and-down">
             <li><a href="#createRepoModal" class="modal-trigger">Create</a></li>
         </ul>
@@ -43,6 +46,7 @@
 <div id="createRepoModal" class="modal modal-fixed-footer">
     <div class="modal-content">
         <h4>Create repository</h4>
+        <p>Repository id must consist of </p>
         <div class="row">
             <div class="input-field col s12">
                 <label for="createRepoId">Repository id</label>
@@ -75,6 +79,11 @@
             <div id="selectRepo" class="input-field col s12">
                 <select id="selectRepoId" selected>Choose repository</select>
                 <button id="deleteRepoButton" class="waves-effect waves-light red btn">Delete</button>
+            </div>
+        </div>
+        <div class="row">
+            <div id="selectBranch" class="input-field col s12">
+                <select id="selectBranchId" selected>Choose branch</select>
             </div>
         </div>
 

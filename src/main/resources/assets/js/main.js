@@ -1,6 +1,8 @@
 var REPO_SELECTOR_ID = "#selectRepoId";
 var REPO_INFO_BOX = "#repoInfoBox";
 
+var BRANCH_SELECTOR_ID = "#selectBranchId";
+
 var CREATE_REPO_BUTTON = '#createRepoButton';
 var CREATE_REPO_INPUT = '#createRepoId';
 
@@ -20,14 +22,12 @@ $(function () {
     getRepoList($(REPO_SELECTOR_ID));
 
     $(REPO_SELECTOR_ID).change(function () {
+        setChangeRepoLayout();
         getRepoInfo(this.value);
         enabledButton($(DELETE_REPO_BUTTON));
         $(QUERY_DIV).show();
+        enabledButton($(QUERY_BUTTON));
     });
-
-    $(CREATE_REPO_INPUT).keyup(setCreateRepoButtonState);
-
-    $(QUERY_INPUT).keyup(setQueryButtonState);
 
     $(DELETE_REPO_BUTTON).click(function () {
         deleteRepo();
@@ -56,9 +56,16 @@ var initializeView = function () {
 var setStartLayout = function () {
     $(REPO_INFO_BOX).hide();
     $(QUERY_DIV).hide();
+    $(QUERY_RESULT_BOX).hide();
     disableButton($(DELETE_REPO_BUTTON));
     disableButton($(CREATE_REPO_BUTTON));
     disableButton($(QUERY_BUTTON));
+};
+
+var setChangeRepoLayout = function () {
+    $(REPO_INFO_BOX).hide();
+    $(QUERY_DIV).hide();
+    $(QUERY_RESULT_BOX).hide();
 };
 
 var disableButton = function (element) {
@@ -107,7 +114,8 @@ var getRepoInfo = function (id) {
         type: 'GET',
         data: data,
         success: function (result) {
-            renderRepoInfoBox(result, $(REPO_INFO_BOX));
+            renderBranchList(result, $(BRANCH_SELECTOR_ID));
+            //renderRepoInfoBox(result, $(REPO_INFO_BOX));
             $(REPO_INFO_BOX).show();
         }
     });
@@ -180,17 +188,50 @@ function doQuery() {
 var renderRepoList = function (result, renderer) {
 
     var html = "";
-
     html += '<option value="" disabled selected>Select repository</option>';
-
     result.repoList.forEach(function (entry) {
         html += "<option value='" + entry.id + "'>" + entry.id + "</option>";
     });
 
-    console.log("Rendering element ", renderer);
+    renderer.html(html);
+    renderer.material_select();
+};
+
+
+var renderBranchList = function (result, renderer) {
+
+    var repoInfo = result.repoInfo;
+    var branchInfo = repoInfo.branchInfo;
+
+    var html = "";
+    if (branchInfo.length == 1) {
+        html = renderSingleBranch(html, branchInfo);
+    } else {
+        html = renderMultipleBranches(html, branchInfo);
+    }
 
     renderer.html(html);
     renderer.material_select();
+};
+
+var renderSingleBranch = function (html, branchInfo) {
+    html += '<option value=';
+    html += '"' + branchInfo[0].branch + '"';
+    html += 'disabled selected>';
+    html += branchInfo[0].branch;
+    html += ' (' + branchInfo[0].total + ' nodes)';
+    html += '</option>';
+    return html;
+};
+
+var renderMultipleBranches = function (html, branchInfo) {
+    html += '<option value="" disabled selected>Select branch</option>';
+    branchInfo.forEach(function (branch) {
+        html += '<option value=';
+        html += '"' + branch.branch + '"';
+        html += '>' + branch.branch + ' (' + branch.total + ' nodes )</option>';
+    });
+    return html;
 };
 
 var renderRepoInfoBox = function (result, rendered) {
@@ -213,36 +254,56 @@ var renderRepoInfoBox = function (result, rendered) {
     rendered.html(html);
 };
 
+
 var renderQueryResult = function (result, renderer) {
 
-    var html = '<ul class="collapsible" data-collapsible="accordion">';
+    var queryResult = result.queryResult;
 
-    result.result.hits.forEach(function (hit) {
-        html = renderQueryHit(html, hit);
-    });
+    var html = "";
+    html = renderQueryMetaData(html, queryResult);
 
-    html += '</ul>';
+    html = renderQueryHits(html, queryResult);
+
     renderer.html(html);
-
     $('.collapsible').collapsible();
+    Prism.highlightAll();
+    renderer.show();
 };
 
+function renderQueryMetaData(html, queryResult) {
 
-function renderQueryHit(html, hit) {
+    html += "<p>QueryTime: " + queryResult.queryTime + "ms, FetchTime: " + queryResult.fetchTime + "ms</p>";
+
+    return html;
+}
+
+
+var renderQueryHits = function (html, result) {
+
+    html += '<ul id="queryHitsUl" class="collapsible" data-collapsible="accordion">';
+    result.hits.forEach(function (hit) {
+        html = renderQueryHit(html, hit);
+    });
+    html += '</ul>';
+    return html;
+};
+
+var renderQueryHit = function (html, hit) {
     html += '<li class="queryResultItem">';
     html += '<div class="collapsible-header">';
     html += '<b>' + hit._path + '</b> ( score: ' + hit._score + ' )';
     html += '</div>';
     html += '<div class="collapsible-body">';
     html += '<pre>';
-    html += '<code>';
+    html += '<code class="language-javascript">';
     html += JSON.stringify(hit.node, null, 4);
     html += '</code>';
     html += '</pre>';
     html += '</div>';
     html += '</li>';
+
     return html;
-}
+};
 
 var renderMessage = function (result) {
 
