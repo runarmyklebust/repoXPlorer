@@ -10,11 +10,15 @@ exports.get = function (req) {
     }
 
     var query = req.params.queryString;
+    var branch = req.params.branch;
+    var count = req.params.count;
+
 
     var queryStart = new Date().getTime();
-    var result = runInRepo(repoId, 'master', function () {
+    var result = runInRepo(repoId, branch, function () {
         return nodeLib.query({
-            query: query
+            query: query,
+            count: count
         });
     });
     var queryEnd = new Date().getTime() - queryStart;
@@ -28,7 +32,7 @@ exports.get = function (req) {
     var fetchStart = new Date().getTime();
     var entries = [];
     result.hits.forEach(function (hit) {
-        var node = runInRepo(repoId, 'master', function () {
+        var node = runInRepo(repoId, branch, function () {
             return nodeLib.get({
                 key: hit.id
             })

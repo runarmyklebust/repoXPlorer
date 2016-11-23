@@ -11,6 +11,7 @@ var DELETE_REPO_BUTTON = '#deleteRepoButton';
 var QUERY_DIV = '#query';
 var QUERY_BUTTON = '#queryButton';
 var QUERY_INPUT = '#queryInput';
+var QUERY_COUNT = '#queryCountInput';
 var QUERY_RESULT_BOX = "#queryResultBox";
 
 var MESSAGE_BOX = '#messageBox';
@@ -167,10 +168,14 @@ function deleteRepo() {
 function doQuery() {
     var queryString = $(QUERY_INPUT).val();
     var repoId = $(REPO_SELECTOR_ID).find(":selected").text();
+    var branch = $(BRANCH_SELECTOR_ID).val();
+    var count = $(QUERY_COUNT).val();
 
     var data = {
         repoId: repoId,
-        queryString: queryString
+        queryString: queryString,
+        branch: branch,
+        count: count
     };
 
     jQuery.ajax({
@@ -217,7 +222,7 @@ var renderBranchList = function (result, renderer) {
 var renderSingleBranch = function (html, branchInfo) {
     html += '<option value=';
     html += '"' + branchInfo[0].branch + '"';
-    html += 'disabled selected>';
+    html += 'selected>';
     html += branchInfo[0].branch;
     html += ' (' + branchInfo[0].total + ' nodes)';
     html += '</option>';
@@ -254,7 +259,6 @@ var renderRepoInfoBox = function (result, rendered) {
     rendered.html(html);
 };
 
-
 var renderQueryResult = function (result, renderer) {
 
     var queryResult = result.queryResult;
@@ -273,6 +277,7 @@ var renderQueryResult = function (result, renderer) {
 function renderQueryMetaData(html, queryResult) {
 
     html += "<p>QueryTime: " + queryResult.queryTime + "ms, FetchTime: " + queryResult.fetchTime + "ms</p>";
+    html += "<p>Showing hits: " + queryResult.count + " of " + queryResult.total + "</p>";
 
     return html;
 }
