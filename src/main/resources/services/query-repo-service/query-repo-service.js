@@ -12,15 +12,17 @@ exports.get = function (req) {
     var query = req.params.queryString;
     var branch = req.params.branch;
     var count = req.params.count;
+    var sort = req.params.sort;
 
+    var repo = connect(repoId, branch);
 
     var queryStart = new Date().getTime();
-    var result = runInRepo(repoId, branch, function () {
-        return nodeLib.query({
-            query: query,
-            count: count
-        });
+    var result = repo.query({
+        query: query,
+        count: count,
+        sort: sort
     });
+
     var queryEnd = new Date().getTime() - queryStart;
 
     var queryResult = {
@@ -31,22 +33,23 @@ exports.get = function (req) {
 
     var fetchStart = new Date().getTime();
     var entries = [];
+
     result.hits.forEach(function (hit) {
-        var node = runInRepo(repoId, branch, function () {
-            return nodeLib.get({
+            var node = repo.get({
                 key: hit.id
-            })
-        });
+            });
 
-        var entry = {
-            id: hit.id,
-            _score: hit.score,
-            _path: node._path,
-            node: node
-        };
+            var entry = {
+                id: hit.id,
+                _score: hit.score,
+                _path: node._path,
+                node: node
+            };
 
-        entries.push(entry);
-    });
+            entries.push(entry);
+        }
+    );
+
     var fetchEnd = new Date().getTime() - fetchStart;
 
     queryResult.hits = entries;
@@ -62,13 +65,11 @@ exports.get = function (req) {
     }
 };
 
-var runInRepo = function (repoId, branch, callback) {
+var connect = function (repoId, branch) {
 
-    return contextLib.run({
+    return nodeLib.connect({
         branch: branch,
-        repository: repoId
-    }, callback);
-
-
+        repoId: repoId
+    });
 };
 

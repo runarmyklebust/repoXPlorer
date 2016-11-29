@@ -1,6 +1,5 @@
 var repoLib = require('/lib/xp/repo');
 var nodeLib = require('/lib/xp/node');
-var contextLib = require('/lib/xp/context');
 
 exports.get = function (req) {
 
@@ -36,17 +35,14 @@ exports.get = function (req) {
     }
 };
 
-
 var getBranchInfo = function (repoId, branch) {
 
     var branchInfo = {
         branch: branch
     };
 
-    var result = runInRepoContext(repoId, branch, function () {
-        return nodeLib.query({
-            count: 0
-        });
+    var result = connect(repoId, branch).query({
+        count: 0
     });
 
     branchInfo.total = result.total;
@@ -62,18 +58,17 @@ var renderError = function (message) {
     }
 };
 
-var runInRepoContext = function (repoId, branch, callback) {
+var connect = function (repoId, branch) {
 
-    return contextLib.run({
+    return nodeLib.connect({
         branch: branch,
-        repository: repoId,
+        repoId: repoId,
         user: {
             login: 'su',
             userStore: 'system'
         },
         principals: ["role:system.admin"]
-    }, callback);
-
+    });
 };
 
 

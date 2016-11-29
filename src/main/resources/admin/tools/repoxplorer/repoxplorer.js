@@ -15,7 +15,8 @@ exports.get = function (req) {
         repoInfoService: getServiceUrl('repo-info-service'),
         deleteRepoServiceUrl: getServiceUrl('delete-repo-service'),
         createRepoServiceUrl: getServiceUrl('create-repo-service'),
-        queryRepoServiceUrl: getServiceUrl('query-repo-service')
+        queryRepoServiceUrl: getServiceUrl('query-repo-service'),
+        autocompleteServiceUrl: getServiceUrl('autocomplete-service')
     };
 
     return {
@@ -24,7 +25,6 @@ exports.get = function (req) {
     };
 
 };
-
 
 var getServiceUrl = function (name) {
 

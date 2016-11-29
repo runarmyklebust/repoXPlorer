@@ -20,7 +20,7 @@ exports.post = function (req) {
         id: repoId
     });
 
-    return returnMessage("Repository [" + repoId + "] created");
+    return returnMessage("Repository [" + createdRepo.id + "] created");
 };
 
 var returnMessage = function (message) {

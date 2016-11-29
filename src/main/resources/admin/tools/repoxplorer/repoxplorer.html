@@ -19,6 +19,7 @@
     <link href="{{assetsUrl}}/css/prism.css" rel="stylesheet"/>
     <script src="{{assetsUrl}}/js/prism.js" data-manual></script>
 
+
     <script src="{{jsUrl}}"></script>
     <script>
         var repoLoaderService = '{{repoLoaderService}}';
@@ -26,6 +27,7 @@
         var deleteRepoServiceUrl = '{{deleteRepoServiceUrl}}';
         var createRepoServiceUrl = '{{createRepoServiceUrl}}';
         var queryRepoServiceUrl = '{{queryRepoServiceUrl}}';
+        var autocompleteServiceUrl = '{{autocompleteServiceUrl}}'
     </script>
 
 </head>
@@ -42,7 +44,7 @@
     </div>
 </nav>
 
-<!-- Create repo modal -->
+<!-- Create connect modal -->
 <div id="createRepoModal" class="modal modal-fixed-footer">
     <div class="modal-content">
         <h4>Create repository</h4>
@@ -88,16 +90,16 @@
         </div>
 
         <div id="query" class="row">
-            <div class="row input-field">
-                <div class="input-field col s12">
-                    <input id="queryInput" type="text" class="validate">
-                    <label for="queryInput">queryString</label>
+            <div class="input-field col s12">
+                <div class="row input-field">
+                    <textarea id="queryInput" class="materialize-textarea" placeholder="<query expr>"></textarea>
                 </div>
+
             </div>
             <div class="row">
                 <div class="input-field col s8">
-                    <input id="querySort" type="text" class="validate">
-                    <label for="querySort">orderExpr</label>
+                    <input id="querySortInput" type="text" class="validate">
+                    <label for="querySortInput">orderExpr</label>
                 </div>
                 <div class="input-field col s2">
                     <input id="queryCountInput" type="text" value="10" class="validate">

@@ -13,8 +13,11 @@ var QUERY_BUTTON = '#queryButton';
 var QUERY_INPUT = '#queryInput';
 var QUERY_COUNT = '#queryCountInput';
 var QUERY_RESULT_BOX = "#queryResultBox";
+var QUERY_SORT_INPUT = "#querySortInput";
 
 var MESSAGE_BOX = '#messageBox';
+
+var BTN_FULLTEXT = '#btn-fulltext';
 
 $(function () {
 
@@ -42,8 +45,33 @@ $(function () {
         doQuery();
     });
 
+    $(QUERY_INPUT).keyup(function () {
+        delay(function () {
+            autoCompleteQuery();
+        }, 250);
+    });
+
     $('.modal').modal();
 });
+
+function autoCompleteQuery() {
+
+    var queryInput = $(QUERY_INPUT);
+
+    var data = {
+        value: queryInput.val()
+    };
+
+    jQuery.ajax({
+        url: autocompleteServiceUrl,
+        cache: true,
+        type: 'GET',
+        data: data,
+        success: function (result) {
+            updateQueryInput(result, queryInput);
+        }
+    });
+}
 
 function isEmpty(str) {
     return (!str || 0 === str.length);
@@ -77,14 +105,6 @@ var enabledButton = function (element) {
     element.prop("disabled", false);
 };
 
-var setCreateRepoButtonState = function () {
-    setTextInputButtonState($(CREATE_REPO_INPUT), $(CREATE_REPO_BUTTON));
-};
-
-var setQueryButtonState = function () {
-    setTextInputButtonState($(QUERY_INPUT), $(QUERY_BUTTON));
-};
-
 var setTextInputButtonState = function (input, button) {
     if (!isEmpty(input.val())) {
         enabledButton(button);
@@ -116,7 +136,6 @@ var getRepoInfo = function (id) {
         data: data,
         success: function (result) {
             renderBranchList(result, $(BRANCH_SELECTOR_ID));
-            //renderRepoInfoBox(result, $(REPO_INFO_BOX));
             $(REPO_INFO_BOX).show();
         }
     });
@@ -170,12 +189,14 @@ function doQuery() {
     var repoId = $(REPO_SELECTOR_ID).find(":selected").text();
     var branch = $(BRANCH_SELECTOR_ID).val();
     var count = $(QUERY_COUNT).val();
+    var sort = $(QUERY_SORT_INPUT).val();
 
     var data = {
         repoId: repoId,
         queryString: queryString,
         branch: branch,
-        count: count
+        count: count,
+        sort: sort
     };
 
     jQuery.ajax({
@@ -190,6 +211,15 @@ function doQuery() {
 }
 
 // RENDER STUFF
+
+var updateQueryInput = function (result, element) {
+    if (!result.suggester.valid) {
+        element.css('color', 'red');
+    } else {
+        element.css('color', 'green');
+    }
+};
+
 var renderRepoList = function (result, renderer) {
 
     var html = "";
@@ -333,4 +363,14 @@ var renderMessage = function (result) {
     }, 1500);
 };
 
+
+/** Utils **/
+
+var delay = (function () {
+    var timer = 0;
+    return function (callback, ms) {
+        clearTimeout(timer);
+        timer = setTimeout(callback, ms);
+    };
+})();
 
