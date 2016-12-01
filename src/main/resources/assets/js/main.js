@@ -17,8 +17,6 @@ var QUERY_SORT_INPUT = "#querySortInput";
 
 var MESSAGE_BOX = '#messageBox';
 
-var BTN_FULLTEXT = '#btn-fulltext';
-
 $(function () {
 
     initializeView();
@@ -45,14 +43,66 @@ $(function () {
         doQuery();
     });
 
-    $(QUERY_INPUT).keyup(function () {
-        delay(function () {
-            autoCompleteQuery();
-        }, 250);
-    });
+    /* $(QUERY_INPUT).keyup(function () {
+     delay(function () {
+     autoCompleteQuery();
+     }, 200);
+     });
+     */
 
     $('.modal').modal();
+
+
+    $(QUERY_INPUT).textcomplete([
+        { // tech companies
+            id: 'tech-companies',
+            words: ['apple', 'google', 'facebook', 'github'],
+            match: /\b(\w{1,})$/,
+            search: function (term, callback) {
+
+                getSuggestorValues(term, callback);
+
+//                callback($.map(this.words, function (word) {
+                //                   return word.indexOf(term) === 0 ? word : null;
+                //               }));
+            },
+            index: 1,
+            replace: function (word) {
+                return word + ' ';
+            }
+        }
+    ], {
+        onKeydown: function (e, commands) {
+            if (e.ctrlKey && e.keyCode === 74) { // CTRL-J
+                return commands.KEY_ENTER;
+            }
+        }
+    });
+
+
 });
+
+
+function getSuggestorValues(term, callback) {
+
+    var data = {
+        value: term
+    };
+
+    jQuery.ajax({
+        url: autocompleteServiceUrl,
+        cache: true,
+        type: 'GET',
+        data: data,
+        success: function (result) {
+            console.log("Result", result);
+            callback(result.suggester.suggestions);
+            //updateQueryInput(result, queryInput);
+        }
+    });
+
+}
+
 
 function autoCompleteQuery() {
 
@@ -213,11 +263,17 @@ function doQuery() {
 // RENDER STUFF
 
 var updateQueryInput = function (result, element) {
+
+    console.log("Here be result", result);
+
     if (!result.suggester.valid) {
         element.css('color', 'red');
     } else {
         element.css('color', 'green');
     }
+
+    element.textcomplete(strategies, option);
+
 };
 
 var renderRepoList = function (result, renderer) {

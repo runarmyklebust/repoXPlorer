@@ -20,5 +20,16 @@ public class AutocompleteResultMapper
     public void serialize( final MapGenerator gen )
     {
         gen.value( "valid", result.isValid() );
+        serializeSuggestions( gen );
+    }
+
+    private void serializeSuggestions( final MapGenerator gen )
+    {
+        gen.array( "suggestions" );
+        for ( final String suggestion : result.getSuggestions() )
+        {
+            gen.value( suggestion );
+        }
+        gen.end();
     }
 }

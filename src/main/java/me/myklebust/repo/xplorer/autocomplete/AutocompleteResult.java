@@ -1,5 +1,10 @@
 package me.myklebust.repo.xplorer.autocomplete;
 
+import java.util.Collection;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 public class AutocompleteResult
 {
     private final boolean isValid;
@@ -8,11 +13,14 @@ public class AutocompleteResult
 
     private final String fullValue;
 
+    private final List<String> suggestions;
+
     private AutocompleteResult( final Builder builder )
     {
-        fullValue = builder.fullValue;
-        newPart = builder.newPart;
-        isValid = builder.isValid;
+        this.fullValue = builder.fullValue;
+        this.newPart = builder.newPart;
+        this.isValid = builder.isValid;
+        this.suggestions = builder.suggestions;
     }
 
     public boolean isValid()
@@ -30,11 +38,15 @@ public class AutocompleteResult
         return fullValue;
     }
 
+    public List<String> getSuggestions()
+    {
+        return suggestions;
+    }
+
     public static Builder create()
     {
         return new Builder();
     }
-
 
     public static final class Builder
     {
@@ -43,6 +55,9 @@ public class AutocompleteResult
         private String newPart;
 
         private boolean isValid;
+
+        private final List<String> suggestions = Lists.newArrayList();
+
 
         private Builder()
         {
@@ -63,6 +78,18 @@ public class AutocompleteResult
         public Builder isValid( final boolean val )
         {
             isValid = val;
+            return this;
+        }
+
+        public Builder addSuggest( final String suggest )
+        {
+            this.suggestions.add( suggest );
+            return this;
+        }
+
+        public Builder addSuggests( final Collection suggests )
+        {
+            this.suggestions.addAll( suggests );
             return this;
         }
 
