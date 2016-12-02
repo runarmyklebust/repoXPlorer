@@ -1,5 +1,7 @@
 var repoLib = require('/lib/xp/repo');
 var nodeLib = require('/lib/xp/node');
+var ioLib = require('/lib/xp/io');
+
 
 exports.get = function (req) {
 

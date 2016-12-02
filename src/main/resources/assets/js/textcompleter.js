@@ -1,32 +1,27 @@
 $(function () {
 
     $(QUERY_INPUT).textcomplete([
-        { // tech companies
-            id: 'tech-companies',
-            words: ['apple', 'google', 'facebook', 'github'],
-            match: /\b(\w{1,})$/,
+        {
+            match: /\b(\w+|"|'\)|"\)|')$/,
             search: function (term, callback) {
                 getSuggestorValues(term, callback);
             },
             index: 1,
             replace: function (word) {
-                return word + ' ';
+                return word + '';
             }
         }
-    ], {
-        onKeydown: function (e, commands) {
-            if (e.ctrlKey && e.keyCode === 74) { // CTRL-J
-                return commands.KEY_ENTER;
-            }
-        }
-    });
-    
+    ]);
+
 });
 
 function getSuggestorValues(term, callback) {
 
+    var queryInput = $(QUERY_INPUT);
+
     var data = {
-        value: term
+        term: term,
+        fullValue: queryInput.val()
     };
 
     jQuery.ajax({
@@ -37,8 +32,20 @@ function getSuggestorValues(term, callback) {
         success: function (result) {
             console.log("Result", result);
             callback(result.suggester.suggestions);
-            //updateQueryInput(result, queryInput);
+            updateQueryInput(result, $(QUERY_INPUT));
         }
     });
 
 }
+
+var updateQueryInput = function (result, element) {
+
+    console.log("Here be result", result);
+
+    if (!result.suggester.valid) {
+        element.css('color', 'red');
+    } else {
+        element.css('color', 'green');
+    }
+
+};

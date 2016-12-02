@@ -12,15 +12,15 @@ public class AutocompleterBean
     private SuggestionProducers producers;
 
     @SuppressWarnings("unused")
-    public Object execute( final String currentValue )
+    public Object execute( final String term, final String fullValue )
     {
         final AutocompleteResult.Builder result = AutocompleteResult.create();
-        result.isValid( QueryStringValidator.isValid( currentValue ) );
+        result.isValid( QueryStringValidator.isValid( fullValue ) );
 
-        result.fullValue( currentValue );
+        result.fullValue( fullValue );
         result.newPart( "" );
 
-        result.addSuggests( producers.match( currentValue ) );
+        result.addSuggests( producers.match( term ) );
 
         return new AutocompleteResultMapper( result.build() );
     }

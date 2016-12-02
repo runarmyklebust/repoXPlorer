@@ -2,10 +2,13 @@ var autocompleter = require('/lib/autocompleter');
 
 exports.get = function (req) {
 
-    var currentValue = req.params.value;
+    var term = req.params.term;
+    var fullValue = req.params.fullValue;
 
-    var result = autocompleter.execute(currentValue);
+    log.info("FullValue: [" + fullValue + "]");
 
+    var result = autocompleter.execute(term, fullValue);
+    
     return {
         contentType: 'application/json',
         body: {

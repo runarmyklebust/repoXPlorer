@@ -53,75 +53,9 @@ $(function () {
     $('.modal').modal();
 
 
-    $(QUERY_INPUT).textcomplete([
-        { // tech companies
-            id: 'tech-companies',
-            words: ['apple', 'google', 'facebook', 'github'],
-            match: /\b(\w{1,})$/,
-            search: function (term, callback) {
-
-                getSuggestorValues(term, callback);
-
-//                callback($.map(this.words, function (word) {
-                //                   return word.indexOf(term) === 0 ? word : null;
-                //               }));
-            },
-            index: 1,
-            replace: function (word) {
-                return word + ' ';
-            }
-        }
-    ], {
-        onKeydown: function (e, commands) {
-            if (e.ctrlKey && e.keyCode === 74) { // CTRL-J
-                return commands.KEY_ENTER;
-            }
-        }
-    });
-
-
 });
 
 
-function getSuggestorValues(term, callback) {
-
-    var data = {
-        value: term
-    };
-
-    jQuery.ajax({
-        url: autocompleteServiceUrl,
-        cache: true,
-        type: 'GET',
-        data: data,
-        success: function (result) {
-            console.log("Result", result);
-            callback(result.suggester.suggestions);
-            //updateQueryInput(result, queryInput);
-        }
-    });
-
-}
-
-
-function autoCompleteQuery() {
-
-    var queryInput = $(QUERY_INPUT);
-
-    var data = {
-        value: queryInput.val()
-    };
-
-    jQuery.ajax({
-        url: autocompleteServiceUrl,
-        cache: true,
-        type: 'GET',
-        data: data,
-        success: function (result) {
-            updateQueryInput(result, queryInput);
-        }
-    });
-}
 
 function isEmpty(str) {
     return (!str || 0 === str.length);
@@ -261,20 +195,6 @@ function doQuery() {
 }
 
 // RENDER STUFF
-
-var updateQueryInput = function (result, element) {
-
-    console.log("Here be result", result);
-
-    if (!result.suggester.valid) {
-        element.css('color', 'red');
-    } else {
-        element.css('color', 'green');
-    }
-
-    element.textcomplete(strategies, option);
-
-};
 
 var renderRepoList = function (result, renderer) {
 

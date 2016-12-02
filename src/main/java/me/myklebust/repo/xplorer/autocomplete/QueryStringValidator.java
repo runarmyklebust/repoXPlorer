@@ -8,6 +8,9 @@ public class QueryStringValidator
     {
         try
         {
+
+            System.out.println( "testing value: " + value );
+
             QueryParser.parse( value );
             return true;
 

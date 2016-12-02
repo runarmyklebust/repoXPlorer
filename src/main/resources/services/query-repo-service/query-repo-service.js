@@ -9,9 +9,9 @@ exports.get = function (req) {
         return returnError("no repo-id given");
     }
 
-    var query = req.params.queryString;
-    var branch = req.params.branch;
-    var count = req.params.count;
+    var query = req.params.queryString ? req.params.queryString : "";
+    var branch = req.params.branch ? req.params.branch : 'master';
+    var count = req.params.count ? req.params.count : 25;
     var sort = req.params.sort;
 
     var repo = connect(repoId, branch);
