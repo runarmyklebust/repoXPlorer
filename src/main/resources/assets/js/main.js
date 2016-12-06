@@ -71,7 +71,7 @@ var setStartLayout = function () {
     $(QUERY_DIV).hide();
     $(QUERY_RESULT_BOX).hide();
     disableButton($(DELETE_REPO_BUTTON));
-    disableButton($(CREATE_REPO_BUTTON));
+    //disableButton($(CREATE_REPO_BUTTON));
     disableButton($(QUERY_BUTTON));
 };
 

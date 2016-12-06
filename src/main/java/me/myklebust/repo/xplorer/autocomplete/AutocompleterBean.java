@@ -1,5 +1,6 @@
 package me.myklebust.repo.xplorer.autocomplete;
 
+import me.myklebust.repo.xplorer.autocomplete.context.ProducerContext;
 import me.myklebust.repo.xplorer.autocomplete.mapper.AutocompleteResultMapper;
 import me.myklebust.repo.xplorer.autocomplete.producers.SuggestionProducers;
 
@@ -20,7 +21,7 @@ public class AutocompleterBean
         result.fullValue( fullValue );
         result.newPart( "" );
 
-        result.addSuggests( producers.match( term ) );
+        result.addSuggests( producers.match( term, ProducerContext.IS_NEW_EXPRESSION ) );
 
         return new AutocompleteResultMapper( result.build() );
     }

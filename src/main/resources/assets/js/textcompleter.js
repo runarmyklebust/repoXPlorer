@@ -35,7 +35,6 @@ function getSuggestorValues(term, callback) {
             updateQueryInput(result, $(QUERY_INPUT));
         }
     });
-
 }
 
 var updateQueryInput = function (result, element) {
@@ -47,5 +46,4 @@ var updateQueryInput = function (result, element) {
     } else {
         element.css('color', 'green');
     }
-
 };

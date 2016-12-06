@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import me.myklebust.repo.xplorer.autocomplete.context.ProducerContext;
+
 public abstract class AbstractProducer
 {
 
     protected abstract Collection<String> getSuggestionEntries();
 
-    protected final List<String> doMatch( final String term )
+    protected final List<String> doMatch( final String term, final ProducerContext context )
     {
         return getSuggestionEntries().stream().
             filter( match -> match.startsWith( term ) ).

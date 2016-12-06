@@ -10,6 +10,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.google.common.collect.Lists;
 
 import me.myklebust.repo.xplorer.autocomplete.SuggestionProducer;
+import me.myklebust.repo.xplorer.autocomplete.context.ProducerContext;
 
 @Component(immediate = true)
 public class SuggestionProducersImpl
@@ -18,12 +19,12 @@ public class SuggestionProducersImpl
     private final List<SuggestionProducer> producerList = Lists.newArrayList();
 
     @Override
-    public List<String> match( final String term )
+    public List<String> match( final String term, final ProducerContext context )
     {
         List<String> suggestions = Lists.newArrayList();
 
         producerList.forEach( ( producer ) -> {
-            suggestions.addAll( producer.produce( term ) );
+            suggestions.addAll( producer.produce( term, context ) );
         } );
 
         return suggestions;
