@@ -35,9 +35,7 @@ exports.get = function (req) {
     var entries = [];
 
     result.hits.forEach(function (hit) {
-            var node = repo.get({
-                key: hit.id
-            });
+        var node = repo.get(hit.id);
 
             var entry = {
                 id: hit.id,
