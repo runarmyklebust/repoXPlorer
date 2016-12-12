@@ -10,7 +10,7 @@ exports.get = function (req) {
         return renderError("Missing parameter repoId");
     }
 
-    var repo = repoLib.get(id);
+    var repo = repoLib.get(repoId);
     if (!repo) {
         return renderError("Repo with id: [" + repoId + "] not found");
     }
