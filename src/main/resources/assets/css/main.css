@@ -19,9 +19,8 @@
     background-color: darkgreen; /* Red */
 }
 
-.left-menu {
+.repoSelector {
     height: 100%;
-    box-shadow: 2px 0px 2px #888888;
 }
 
 .queryResultItem {

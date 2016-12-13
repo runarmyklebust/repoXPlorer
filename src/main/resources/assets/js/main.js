@@ -56,7 +56,6 @@ $(function () {
 });
 
 
-
 function isEmpty(str) {
     return (!str || 0 === str.length);
 }
@@ -98,6 +97,9 @@ var setTextInputButtonState = function (input, button) {
 };
 
 var getRepoList = function (renderer) {
+
+    console.log("In getRepoList. Renderer: ", renderer);
+
     jQuery.ajax({
         url: repoLoaderService,
         cache: false,
@@ -205,7 +207,7 @@ var renderRepoList = function (result, renderer) {
     });
 
     renderer.html(html);
-    renderer.material_select();
+
 };
 
 
@@ -222,7 +224,6 @@ var renderBranchList = function (result, renderer) {
     }
 
     renderer.html(html);
-    renderer.material_select();
 };
 
 var renderSingleBranch = function (html, branchInfo) {
