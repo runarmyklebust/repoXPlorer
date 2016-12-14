@@ -19,8 +19,8 @@ var MESSAGE_BOX = '#messageBox';
 
 var BROWSE_PANEL = '#browsePanel';
 var DIFF_PANEL = '#diffPanel';
-
-var panels = [QUERY_PANEL, BROWSE_PANEL, DIFF_PANEL];
+var INTEGRITY_PANEL = '#integrityPanel';
+var panels = [QUERY_PANEL, BROWSE_PANEL, DIFF_PANEL, INTEGRITY_PANEL];
 
 $(function () {
 
@@ -56,6 +56,10 @@ $(function () {
      */
 
     $('.modal').modal();
+
+    activateNavbar();
+
+
 });
 
 function togglePanel(name) {
@@ -66,6 +70,14 @@ function togglePanel(name) {
         } else {
             $(panel).hide();
         }
+    });
+}
+
+function activateNavbar() {
+    $(".navbar a").on("click", function () {
+
+        $(".nav").find(".active").removeClass("active");
+        $(this).parent().addClass("active");
     });
 }
 

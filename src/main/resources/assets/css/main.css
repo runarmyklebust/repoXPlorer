@@ -28,7 +28,7 @@ main {
 }
 
 .col-fixed-400 {
-    padding-left: 10px;
+    padding-left: 5px;
     padding-right: 10px;
     width: 400px;
     position: fixed;
@@ -44,10 +44,6 @@ main {
 
 .queryInput {
     height: 100px;
-}
-
-.repoSelector  {
-    height: 100%;
 }
 
 .queryResultItem {

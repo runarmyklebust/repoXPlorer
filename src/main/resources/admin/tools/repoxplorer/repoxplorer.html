@@ -51,7 +51,7 @@
 
 
 <!-- Top -->
-<nav class="navbar navbar-fixed-top navbar-dark bg-primary ">
+<nav class="navbar navbar-fixed-top navbar-dark bg-primary">
     <form class="form-inline float-xs-left">
         <select id="selectRepoId" class="custom-select" selected>Choose repository</select>
         <select id="selectBranchId" class="custom-select" selected>Choose branch</select>
@@ -69,13 +69,16 @@
             </div>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="#queryPanel" onclick="togglePanel('queryPanel')">Query<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#queryPanel" onclick="togglePanel('queryPanel')">Query</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#browsePanel" onclick="togglePanel('browsePanel')">Browse</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#diffPanel" onclick="togglePanel('diffPanel')">Diff</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#integrityPanel" onclick="togglePanel('integrityPanel')">Integrity check</a>
         </li>
     </ul>
 </nav>
@@ -155,6 +158,10 @@
 
     <div id="diffPanel" class="hidden">
         <h2>Diff!</h2>
+    </div>
+
+    <div id="integrityPanel" class="hidden">
+        <h2>Check Integrity!</h2>
     </div>
 </main>
 
