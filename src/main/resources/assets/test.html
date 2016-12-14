@@ -1,0 +1,360 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>RepoXPlorer</title>
+
+    <link rel="stylesheet" type="text/css"
+          href="/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/asset/com.enonic.repoXPlorer:1481715746/css/main.css">
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css"
+          integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js"
+            integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"
+            integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+
+    <!-- prism -->
+    <link href="/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/asset/com.enonic.repoXPlorer:1481715746/css/prism.css"
+          rel="stylesheet">
+    <script src="/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/asset/com.enonic.repoXPlorer:1481715746/js/prism.js"
+            data-manual=""></script>
+
+    <!-- jquery-textcomplete -->
+    <script src="/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/asset/com.enonic.repoXPlorer:1481715746/js/jquery.textcomplete.min.js"></script>
+
+
+    <script src="/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/asset/com.enonic.repoXPlorer:1481715746/js/textcompleter.js"></script>
+
+    <script src="/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/asset/com.enonic.repoXPlorer:1481715746/js/main.js"></script>
+    <script>
+        var repoLoaderService = '/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/service/com.enonic.repoXPlorer/repo-loader-service';
+        var repoInfoService = '/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/service/com.enonic.repoXPlorer/repo-info-service';
+        var deleteRepoServiceUrl = '/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/service/com.enonic.repoXPlorer/delete-repo-service';
+        var createRepoServiceUrl = '/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/service/com.enonic.repoXPlorer/create-repo-service';
+        var queryRepoServiceUrl = '/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/service/com.enonic.repoXPlorer/query-repo-service';
+        var autocompleteServiceUrl = '/admin/tool/com.enonic.repoXPlorer/repoxplorer/draft/_/service/com.enonic.repoXPlorer/autocomplete-service'
+    </script>
+
+</head>
+<body>
+
+
+<!-- Top -->
+<nav class="navbar navbar-fixed-top navbar-dark bg-primary ">
+    <form class="form-inline float-xs-left">
+        <select id="selectRepoId" class="custom-select" selected="">
+            <option value="" disabled="" selected="">Select repository</option>
+            <option value="cms-repo">cms-repo</option>
+            <option value="system-repo">system-repo</option>
+        </select>
+        <select id="selectBranchId" class="custom-select" selected="">
+            <option value="master" selected="">master (21 nodes)</option>
+        </select>
+    </form>
+    <ul class="nav navbar-nav float-xs-right">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                Manage
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="#">Create new repo</a>
+                <a class="dropdown-item" href="#">Delete repo</a>
+                <a class="dropdown-item" href="#">Create branch</a>
+            </div>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="#queryPanel">Query<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#browsePanel">Browse</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#diffPanel">Diff</a>
+        </li>
+    </ul>
+</nav>
+
+
+<!-- Create connect modal -->
+<!--
+<div id="createRepoModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h4>Create repository</h4>
+        <p>Repository id must consist of </p>
+        <div class="row">
+            <div class="input-field col s12">
+                <label for="createRepoId">Repository id</label>
+                <input id="createRepoId" type="text">
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <label for="createRepoSettings">Repository settings</label>
+                <input id="createRepoSettings" type="text">
+            </div>
+        </div>
+        <div class="row">
+            <button id="createRepoButton" class="waves-effect waves-light btn">Create</button>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+</div>
+-->
+
+
+<main>
+
+    <!-- QUERY PANEL -->
+    <div id="queryPanel" class="query-panel container-fluid">
+        <div class="row">
+            <!-- Query input -->
+            <div class="col-fixed-400">
+                <form>
+                    <div class="form-group">
+                        <label for="queryInput">Query</label>
+                        <textarea id="queryInput" class="form-control queryInput" placeholder="<query expr>"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="querySortInput">orderExpr</label>
+                        <input id="querySortInput" type="text" class="form-control" placeholder="<query expr>">
+
+                        <label for="queryCountInput">count</label>
+                        <input id="queryCountInput" type="text" value="25" class="form-control">
+
+                        <label for="queryStart">start</label>
+                        <input id="queryStart" type="text" value="0" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <button id="queryButton" class="form-control btn btn-success">doQuery</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Query result -->
+            <div class="col-md-12 col-offset-400">
+                <div class="row">
+                    <div id="repoInfoBox" style="">
+                    </div>
+                    <div id="queryResult" class="row">
+                        <div id="queryResultBox" role="tablist" aria-multiselectable="true" style=""><p>QueryTime: 3ms, FetchTime: 20ms</p>
+                            <p>Showing hits: 21 of 21</p>
+                            <div id="queryHitView" role="tablist" aria-multiselectable="true">
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-0"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-0"
+                                                                                         aria-expanded="false" aria-controls="collapse-0">/applications
+                                        - (1) </a>
+                                    </div>
+                                    <div id="collapse-0" class="collapse" role="tabpanel" aria-labelledby="header-0">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-1"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-1"
+                                                                                         aria-expanded="false" aria-controls="collapse-1">/identity
+                                        - (1) </a></div>
+                                    <div id="collapse-1" class="collapse" role="tabpanel" aria-labelledby="header-1">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-2"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-2"
+                                                                                         aria-expanded="false" aria-controls="collapse-2">/identity/roles
+                                        - (1) </a></div>
+                                    <div id="collapse-2" class="collapse" role="tabpanel" aria-labelledby="header-2">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-3"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-3"
+                                                                                         aria-expanded="false" aria-controls="collapse-3">/identity/system
+                                        - (1) </a></div>
+                                    <div id="collapse-3" class="collapse" role="tabpanel" aria-labelledby="header-3">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-4"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-4"
+                                                                                         aria-expanded="false" aria-controls="collapse-4">/identity/system/users
+                                        - (1) </a></div>
+                                    <div id="collapse-4" class="collapse" role="tabpanel" aria-labelledby="header-4">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-5"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-5"
+                                                                                         aria-expanded="false" aria-controls="collapse-5">/identity/system/groups
+                                        - (1) </a></div>
+                                    <div id="collapse-5" class="collapse" role="tabpanel" aria-labelledby="header-5">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-6"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-6"
+                                                                                         aria-expanded="false" aria-controls="collapse-6">/identity/roles/system.user.admin
+                                        - (1) </a></div>
+                                    <div id="collapse-6" class="collapse" role="tabpanel" aria-labelledby="header-6">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-7"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-7"
+                                                                                         aria-expanded="false" aria-controls="collapse-7">/identity/roles/system.authenticated
+                                        - (1) </a></div>
+                                    <div id="collapse-7" class="collapse" role="tabpanel" aria-labelledby="header-7">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-8"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-8"
+                                                                                         aria-expanded="false" aria-controls="collapse-8">/identity/roles/cms.cm.app
+                                        - (1) </a></div>
+                                    <div id="collapse-8" class="collapse" role="tabpanel" aria-labelledby="header-8">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-9"><a class="collapsed" data-toggle="collapse"
+                                                                                         data-parent="#queryHitView" href="#collapse-9"
+                                                                                         aria-expanded="false" aria-controls="collapse-9">/identity/roles/system.everyone
+                                        - (1) </a></div>
+                                    <div id="collapse-9" class="collapse" role="tabpanel" aria-labelledby="header-9">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-10"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-10"
+                                                                                          aria-expanded="false" aria-controls="collapse-10">/identity/roles/system.user.app
+                                        - (1) </a></div>
+                                    <div id="collapse-10" class="collapse" role="tabpanel" aria-labelledby="header-10">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-11"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-11"
+                                                                                          aria-expanded="false" aria-controls="collapse-11">/repository/system-repo
+                                        - (1) </a></div>
+                                    <div id="collapse-11" class="collapse" role="tabpanel" aria-labelledby="header-11">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-12"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-12"
+                                                                                          aria-expanded="false" aria-controls="collapse-12">/
+                                        - (1) </a></div>
+                                    <div id="collapse-12" class="collapse" role="tabpanel" aria-labelledby="header-12">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-13"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-13"
+                                                                                          aria-expanded="false" aria-controls="collapse-13">/identity/roles/cms.expert
+                                        - (1) </a></div>
+                                    <div id="collapse-13" class="collapse" role="tabpanel" aria-labelledby="header-13">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-14"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-14"
+                                                                                          aria-expanded="false" aria-controls="collapse-14">/identity/roles/cms.admin
+                                        - (1) </a></div>
+                                    <div id="collapse-14" class="collapse" role="tabpanel" aria-labelledby="header-14">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-15"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-15"
+                                                                                          aria-expanded="false" aria-controls="collapse-15">/identity/system/users/anonymous
+                                        - (1) </a></div>
+                                    <div id="collapse-15" class="collapse" role="tabpanel" aria-labelledby="header-15">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-16"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-16"
+                                                                                          aria-expanded="false" aria-controls="collapse-16">/identity/system/users/su
+                                        - (1) </a></div>
+                                    <div id="collapse-16" class="collapse" role="tabpanel" aria-labelledby="header-16">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-17"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-17"
+                                                                                          aria-expanded="false" aria-controls="collapse-17">/identity/roles/system.admin
+                                        - (1) </a></div>
+                                    <div id="collapse-17" class="collapse" role="tabpanel" aria-labelledby="header-17">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-18"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-18"
+                                                                                          aria-expanded="false" aria-controls="collapse-18">/identity/roles/system.admin.login
+                                        - (1) </a></div>
+                                    <div id="collapse-18" class="collapse" role="tabpanel" aria-labelledby="header-18">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-19"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-19"
+                                                                                          aria-expanded="false" aria-controls="collapse-19">/repository/cms-repo
+                                        - (1) </a></div>
+                                    <div id="collapse-19" class="collapse" role="tabpanel" aria-labelledby="header-19">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="header-20"><a class="collapsed" data-toggle="collapse"
+                                                                                          data-parent="#queryHitView" href="#collapse-20"
+                                                                                          aria-expanded="false" aria-controls="collapse-20">/applications/com.enonic.app.superhero
+                                        - (1) </a></div>
+                                    <div id="collapse-20" class="collapse" role="tabpanel" aria-labelledby="header-20">
+                                        <div class="card-block"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+</body>
+</html>

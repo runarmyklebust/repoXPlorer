@@ -1,8 +1,10 @@
 <html>
 <head>
-    <title>RepoXPlorer</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RepoXPlorer</title>
 
     <link rel="stylesheet" type="text/css" href="{{assetsUrl}}/css/main.css"/>
 
@@ -49,17 +51,7 @@
 
 
 <!-- Top -->
-<!--
-<nav>
-    <div class="nav-wrapper blue">
-        <a href="#" class="brand-logo right">Repo XPlorer</a>
-        <ul id="nav-mobile" class="left hide-on-med-and-down">
-            <li><a href="#createRepoModal" class="modal-trigger">Create</a></li>
-        </ul>
-    </div>
-</nav>
--->
-<nav class="navbar navbar-light bg-faded">
+<nav class="navbar navbar-fixed-top navbar-dark bg-primary ">
     <form class="form-inline float-xs-left">
         <select id="selectRepoId" class="custom-select" selected>Choose repository</select>
         <select id="selectBranchId" class="custom-select" selected>Choose branch</select>
@@ -77,17 +69,15 @@
             </div>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="#">Query<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#queryPanel" onclick="togglePanel('queryPanel')">Query<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Browse</a>
+            <a class="nav-link" href="#browsePanel" onclick="togglePanel('browsePanel')">Browse</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Diff</a>
+            <a class="nav-link" href="#diffPanel" onclick="togglePanel('diffPanel')">Diff</a>
         </li>
-
     </ul>
-
 </nav>
 
 
@@ -119,75 +109,54 @@
 </div>
 -->
 
-<!-- QUERY PANEL -->
-<!--
-<div id="queryPanel">
- <h2>Query panel</h2>
 
-     <div class="left-menu col s4">
-         <div id="repoSelector" class="row">
-             <div id="selectRepo" class="input-field col s12">
-                 <select id="selectRepoId" selected>Choose repository</select>
-                 <button id="deleteRepoButton" class="waves-effect waves-light red btn">Delete</button>
-             </div>
-         </div>
-         <div class="row">
-             <div id="selectBranch" class="input-field col s12">
-                 <select id="selectBranchId" selected>Choose branch</select>
-             </div>
-         </div>
+<main>
 
-         <div id="query" class="row">
-             <div class="input-field col s12">
-                 <div class="row input-field">
-                     <textarea id="queryInput" class="textarea form-control" placeholder="<query expr>"></textarea>
-                 </div>
+    <!-- QUERY PANEL -->
+    <div id="queryPanel" class="query-panel container-fluid">
 
-             </div>
-             <div class="row">
-                 <div class="input-field col s8">
-                     <input id="querySortInput" type="text" class="validate">
-                     <label for="querySortInput">orderExpr</label>
-                 </div>
-                 <div class="input-field col s2">
-                     <input id="queryCountInput" type="text" value="25" class="validate">
-                     <label for="queryCountInput">count</label>
-                 </div>
-                 <div class="input-field col s2">
-                     <input id="queryStart" type="text" value="0" class="validate">
-                     <label for="queryStart">start</label>
-                 </div>
-             </div>
-             <div class="row">
-                 <div class="input-field col s12">
-                     <input id="queryAggs" type="text" class="validate">
-                     <label for="queryAggs">Aggregations</label>
-                 </div>
-             </div>
-             <div class="row">
-                 <div class="input-field col s12">
-                     <button id="queryButton" class="waves-effect waves-light btn">doQuery</button>
-                 </div>
-             </div>
-         </div>
+        <!-- Query input -->
+        <div class="col-fixed-400">
+            <form>
+                <div class="form-group">
+                    <label for="queryInput">Query</label>
+                    <textarea id="queryInput" class="form-control queryInput" placeholder="<query expr>"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="querySortInput">orderExpr</label>
+                    <input id="querySortInput" type="text" class="form-control" placeholder="<query expr>">
+
+                    <label for="queryCountInput">count</label>
+                    <input id="queryCountInput" type="text" value="25" class="form-control">
+
+                    <label for="queryStart">start</label>
+                    <input id="queryStart" type="text" value="0" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <button id="queryButton" class="form-control btn btn-success">doQuery</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Query result -->
+        <div class="col-md-12 col-offset-400">
+            <div id="repoInfoBox"></div>
+            <div id="queryResultBox"></div>
+        </div>
+
+    </div>
 
 
-     </div>
+    <div id="browsePanel" class="hidden">
+        <h2>Browse!</h2>
+    </div>
 
-
-     <div class="col s8">
-         <div class="row">
-             <div id="repoInfoBox" class="col s12">
-             </div>
-         </div>
-         <div id="queryResult" class="row">
-             <div id="queryResultBox" class="col s12">
-             </div>
-
-         </div>
-     </div>
-     -->
-</div>
+    <div id="diffPanel" class="hidden">
+        <h2>Diff!</h2>
+    </div>
+</main>
 
 
 </body>

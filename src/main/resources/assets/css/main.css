@@ -19,7 +19,34 @@
     background-color: darkgreen; /* Red */
 }
 
-.repoSelector {
+.navbar form {
+    margin-bottom: 0em;
+}
+
+main {
+    margin-top: 70px;
+}
+
+.col-fixed-400 {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 400px;
+    position: fixed;
+    height: 100%;
+    box-shadow: lightgray 2px 2px 2px;
+    z-index: 100;
+}
+
+.query-panel .col-offset-400 {
+    padding-left: 450px;
+    z-index: 0;
+}
+
+.queryInput {
+    height: 100px;
+}
+
+.repoSelector  {
     height: 100%;
 }
 
@@ -61,3 +88,6 @@
     cursor: pointer;
 }
 
+.hidden {
+    display: none;
+}

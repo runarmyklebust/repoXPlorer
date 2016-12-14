@@ -8,7 +8,7 @@ var CREATE_REPO_INPUT = '#createRepoId';
 
 var DELETE_REPO_BUTTON = '#deleteRepoButton';
 
-var QUERY_DIV = '#query';
+var QUERY_PANEL = '#queryPanel';
 var QUERY_BUTTON = '#queryButton';
 var QUERY_INPUT = '#queryInput';
 var QUERY_COUNT = '#queryCountInput';
@@ -16,6 +16,11 @@ var QUERY_RESULT_BOX = "#queryResultBox";
 var QUERY_SORT_INPUT = "#querySortInput";
 
 var MESSAGE_BOX = '#messageBox';
+
+var BROWSE_PANEL = '#browsePanel';
+var DIFF_PANEL = '#diffPanel';
+
+var panels = [QUERY_PANEL, BROWSE_PANEL, DIFF_PANEL];
 
 $(function () {
 
@@ -27,7 +32,7 @@ $(function () {
         setChangeRepoLayout();
         getRepoInfo(this.value);
         enabledButton($(DELETE_REPO_BUTTON));
-        $(QUERY_DIV).show();
+        $(QUERY_PANEL).show();
         enabledButton($(QUERY_BUTTON));
     });
 
@@ -51,10 +56,18 @@ $(function () {
      */
 
     $('.modal').modal();
-
-
 });
 
+function togglePanel(name) {
+
+    panels.forEach(function (panel) {
+        if (panel === "#" + name) {
+            $(panel).show();
+        } else {
+            $(panel).hide();
+        }
+    });
+}
 
 function isEmpty(str) {
     return (!str || 0 === str.length);
@@ -67,7 +80,7 @@ var initializeView = function () {
 
 var setStartLayout = function () {
     $(REPO_INFO_BOX).hide();
-    $(QUERY_DIV).hide();
+    $(QUERY_PANEL).hide();
     $(QUERY_RESULT_BOX).hide();
     disableButton($(DELETE_REPO_BUTTON));
     //disableButton($(CREATE_REPO_BUTTON));
@@ -76,7 +89,7 @@ var setStartLayout = function () {
 
 var setChangeRepoLayout = function () {
     $(REPO_INFO_BOX).hide();
-    $(QUERY_DIV).hide();
+    $(QUERY_PANEL).hide();
     $(QUERY_RESULT_BOX).hide();
 };
 
@@ -88,18 +101,8 @@ var enabledButton = function (element) {
     element.prop("disabled", false);
 };
 
-var setTextInputButtonState = function (input, button) {
-    if (!isEmpty(input.val())) {
-        enabledButton(button);
-    } else {
-        disableButton(button);
-    }
-};
 
 var getRepoList = function (renderer) {
-
-    console.log("In getRepoList. Renderer: ", renderer);
-
     jQuery.ajax({
         url: repoLoaderService,
         cache: false,
@@ -192,6 +195,7 @@ function doQuery() {
         type: 'GET',
         success: function (result) {
             renderQueryResult(result, $(QUERY_RESULT_BOX));
+
         }
     });
 }
@@ -276,7 +280,7 @@ var renderQueryResult = function (result, renderer) {
     html = renderQueryHits(html, queryResult);
 
     renderer.html(html);
-    $('.collapsible').collapsible();
+
     Prism.highlightAll();
     renderer.show();
 };
@@ -292,27 +296,53 @@ function renderQueryMetaData(html, queryResult) {
 
 var renderQueryHits = function (html, result) {
 
-    html += '<ul id="queryHitsUl" class="collapsible" data-collapsible="accordion">';
+    var i = 0;
     result.hits.forEach(function (hit) {
-        html = renderQueryHit(html, hit);
+        html = renderQueryHit(html, hit, i++);
     });
-    html += '</ul>';
     return html;
 };
 
-var renderQueryHit = function (html, hit) {
-    html += '<li class="queryResultItem">';
-    html += '<div class="collapsible-header">';
-    html += '<b>' + hit._path + '</b> ( score: ' + hit._score + ' )';
-    html += '</div>';
-    html += '<div class="collapsible-body">';
-    html += '<pre>';
-    html += '<code class="language-javascript">';
+/*
+
+
+
+ <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+ Collapsible Group Item #2
+ </a>
+ </h5>
+ </div>
+ <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+ <div class="card-block">
+ Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+ </div>
+ </div>
+ </div>
+ */
+
+
+var renderQueryHit = function (html, hit, itemNum) {
+
+    var collapseId = "collapse-" + itemNum;
+    var headerId = "header-" + itemNum;
+
+    html += '<div class="card">';
+    html += '  <div class="card-header" role="tab" id="' + headerId + '">';
+    html += '    <a class="collapsed" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
+            '" aria-expanded="false" aria-controls="' + collapseId + '">';
+    html += hit._path + " - (" + hit._score + ")";
+    html += '    </a>';
+    html += '  </div>';
+    html += '  <div id="' + collapseId + '" class="collapse" role="tabpanel" aria-labelledby="' + headerId + '">';
+    html += '   <div class="card-block">';
+    html += '     <pre>';
+    html += '       <code class="language-javascript">';
     html += JSON.stringify(hit.node, null, 4);
-    html += '</code>';
-    html += '</pre>';
+    html += '      </code>';
+    html += '     </pre>';
+    html += '   </div>';
+    html += '  </div>';
     html += '</div>';
-    html += '</li>';
 
     return html;
 };
