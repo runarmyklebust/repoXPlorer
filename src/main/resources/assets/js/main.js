@@ -10,6 +10,7 @@ var DELETE_REPO_BUTTON = '#deleteRepoButton';
 
 var QUERY_PANEL = '#queryPanel';
 var QUERY_BUTTON = '#queryButton';
+var QUERY_FULLTEXT = "#fulltextSearch";
 var QUERY_INPUT = '#queryInput';
 var QUERY_COUNT = '#queryCountInput';
 var QUERY_RESULT_BOX = "#queryResultBox";
@@ -22,18 +23,25 @@ var DIFF_PANEL = '#diffPanel';
 var INTEGRITY_PANEL = '#integrityPanel';
 var panels = [QUERY_PANEL, BROWSE_PANEL, DIFF_PANEL, INTEGRITY_PANEL];
 
+var EVENT_REPO_CONNECTED = "repoXPlorer:repo:connected";
+var EVENT_REPO_DISCONNECTED = "repoXPlorer:repo:disconnected";
+
 $(function () {
 
     initializeView();
 
+    initComponentEventHandlers();
+
     getRepoList($(REPO_SELECTOR_ID));
 
     $(REPO_SELECTOR_ID).change(function () {
+        $(REPO_SELECTOR_ID).trigger(EVENT_REPO_DISCONNECTED);
         setChangeRepoLayout();
         getRepoInfo(this.value);
-        enabledButton($(DELETE_REPO_BUTTON));
-        $(QUERY_PANEL).show();
-        enabledButton($(QUERY_BUTTON));
+    });
+
+    $(BRANCH_SELECTOR_ID).change(function () {
+        $(BRANCH_SELECTOR_ID).trigger(EVENT_REPO_CONNECTED);
     });
 
     $(DELETE_REPO_BUTTON).click(function () {
@@ -48,22 +56,60 @@ $(function () {
         doQuery();
     });
 
-    /* $(QUERY_INPUT).keyup(function () {
-     delay(function () {
-     autoCompleteQuery();
-     }, 200);
-     });
-     */
-
-    $('.modal').modal();
+    initQueryModeListener();
 
     activateNavbar();
-
-
 });
 
-function togglePanel(name) {
 
+function initComponentEventHandlers() {
+
+    $(document).on(EVENT_REPO_CONNECTED, function () {
+        enableElement($(QUERY_FULLTEXT));
+        enabledButton($(QUERY_BUTTON));
+    });
+
+    $(document).on(EVENT_REPO_DISCONNECTED, function () {
+        disableElement($(QUERY_FULLTEXT));
+        disableButton($(QUERY_BUTTON));
+    });
+}
+
+function initQueryModeListener() {
+    $(QUERY_FULLTEXT).keyup(function () {
+        delay(function () {
+            toggleFulltextMode();
+        }, 200);
+    });
+
+    $(QUERY_INPUT).keyup(function () {
+        delay(function () {
+            toggleQueryMode();
+        }, 200);
+    });
+}
+
+function toggleQueryMode() {
+    if ($(QUERY_INPUT).val()) {
+        //enabledButton($(QUERY_BUTTON));
+        disableElement($(QUERY_FULLTEXT));
+    } else {
+        enableElement($(QUERY_FULLTEXT));
+    }
+}
+
+function toggleFulltextMode() {
+    if ($(QUERY_FULLTEXT).val()) {
+        disableElement($(QUERY_INPUT));
+        disableButton($(QUERY_BUTTON));
+        doQuery();
+    } else {
+        enableElement($(QUERY_INPUT));
+        $(QUERY_RESULT_BOX).hide();
+    }
+}
+
+function togglePanel(name) {
     panels.forEach(function (panel) {
         if (panel === "#" + name) {
             $(panel).show();
@@ -81,10 +127,6 @@ function activateNavbar() {
     });
 }
 
-function isEmpty(str) {
-    return (!str || 0 === str.length);
-}
-
 var initializeView = function () {
     $(MESSAGE_BOX).hide();
     setStartLayout();
@@ -92,16 +134,23 @@ var initializeView = function () {
 
 var setStartLayout = function () {
     $(REPO_INFO_BOX).hide();
-    $(QUERY_PANEL).hide();
+    $(QUERY_PANEL).show();
     $(QUERY_RESULT_BOX).hide();
+    disableElement($(QUERY_FULLTEXT));
     disableButton($(DELETE_REPO_BUTTON));
-    //disableButton($(CREATE_REPO_BUTTON));
     disableButton($(QUERY_BUTTON));
 };
 
+function disableElement(element) {
+    element.attr("disabled", "disabled");
+}
+
+function enableElement(element) {
+    element.attr("disabled", false);
+}
+
 var setChangeRepoLayout = function () {
     $(REPO_INFO_BOX).hide();
-    $(QUERY_PANEL).hide();
     $(QUERY_RESULT_BOX).hide();
 };
 
@@ -184,9 +233,10 @@ function deleteRepo() {
     });
 }
 
-
 function doQuery() {
+
     var queryString = $(QUERY_INPUT).val();
+    var fulltext = $(QUERY_FULLTEXT).val();
     var repoId = $(REPO_SELECTOR_ID).find(":selected").text();
     var branch = $(BRANCH_SELECTOR_ID).val();
     var count = $(QUERY_COUNT).val();
@@ -195,6 +245,7 @@ function doQuery() {
     var data = {
         repoId: repoId,
         queryString: queryString,
+        fulltext: fulltext,
         branch: branch,
         count: count,
         sort: sort
@@ -207,7 +258,6 @@ function doQuery() {
         type: 'GET',
         success: function (result) {
             renderQueryResult(result, $(QUERY_RESULT_BOX));
-
         }
     });
 }
@@ -223,9 +273,7 @@ var renderRepoList = function (result, renderer) {
     });
 
     renderer.html(html);
-
 };
-
 
 var renderBranchList = function (result, renderer) {
 
@@ -235,6 +283,7 @@ var renderBranchList = function (result, renderer) {
     var html = "";
     if (branchInfo.length == 1) {
         html = renderSingleBranch(html, branchInfo);
+        renderer.trigger(EVENT_REPO_CONNECTED);
     } else {
         html = renderMultipleBranches(html, branchInfo);
     }
@@ -249,6 +298,7 @@ var renderSingleBranch = function (html, branchInfo) {
     html += branchInfo[0].branch;
     html += ' (' + branchInfo[0].total + ' nodes)';
     html += '</option>';
+
     return html;
 };
 
@@ -262,27 +312,12 @@ var renderMultipleBranches = function (html, branchInfo) {
     return html;
 };
 
-var renderRepoInfoBox = function (result, rendered) {
-    console.log("Result:", result);
-
-    var repoInfo = result.repoInfo;
-
-    var html = "";
-    html += '<table class="bordered">';
-    html += '<th>Branch</th><th>#nodes</th>';
-
-    repoInfo.branchInfo.forEach(function (branch) {
-        html += "<tr>";
-        html += '<td>' + branch.branch + '</td><td>' + branch.total + '</td>';
-        html += "</tr>";
-    });
-
-    html += '</table>';
-
-    rendered.html(html);
-};
-
 var renderQueryResult = function (result, renderer) {
+
+    if (result.error) {
+        renderMessage(result);
+        return;
+    }
 
     var queryResult = result.queryResult;
 
@@ -314,24 +349,6 @@ var renderQueryHits = function (html, result) {
     });
     return html;
 };
-
-/*
-
-
-
- <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
- Collapsible Group Item #2
- </a>
- </h5>
- </div>
- <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
- <div class="card-block">
- Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
- </div>
- </div>
- </div>
- */
-
 
 var renderQueryHit = function (html, hit, itemNum) {
 
@@ -370,6 +387,8 @@ var renderMessage = function (result) {
     } else if (result.message) {
         html += result.message;
         messageBox.removeClass('error').addClass('message');
+    } else {
+        return;
     }
 
     $('#repoMessage').html(html);
@@ -379,7 +398,7 @@ var renderMessage = function (result) {
     setTimeout(function () {
         messageBox.fadeOut(1000, function () {
         });
-    }, 1500);
+    }, 2500);
 };
 
 

@@ -30,7 +30,6 @@ function getSuggestorValues(term, callback) {
         type: 'GET',
         data: data,
         success: function (result) {
-            console.log("Result", result);
             callback(result.suggester.suggestions);
             updateQueryInput(result, $(QUERY_INPUT));
         }
@@ -38,9 +37,6 @@ function getSuggestorValues(term, callback) {
 }
 
 var updateQueryInput = function (result, element) {
-
-    console.log("Here be result", result);
-
     if (!result.suggester.valid) {
         element.css('color', 'red');
     } else {
