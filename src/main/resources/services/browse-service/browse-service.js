@@ -1,7 +1,6 @@
 var nodeLib = require('/lib/xp/node');
 
 exports.get = function (req) {
-
     var path = "/";
 
     var repoId = req.params.repoId;
@@ -39,7 +38,6 @@ exports.get = function (req) {
 };
 
 var createModel = function (result, repo) {
-
     var model = {
         total: result.total,
         count: result.count

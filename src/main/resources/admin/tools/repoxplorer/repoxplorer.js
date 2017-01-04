@@ -15,6 +15,7 @@ exports.get = function (req) {
         repoInfoService: getServiceUrl('repo-info-service'),
         deleteRepoServiceUrl: getServiceUrl('delete-repo-service'),
         createRepoServiceUrl: getServiceUrl('create-repo-service'),
+        createBranchServiceUrl: getServiceUrl('create-branch-service'),
         queryRepoServiceUrl: getServiceUrl('query-repo-service'),
         browseServiceUrl: getServiceUrl('browse-service'),
         autocompleteServiceUrl: getServiceUrl('autocomplete-service')

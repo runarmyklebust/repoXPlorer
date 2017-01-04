@@ -27,6 +27,7 @@ $(function () {
     initComponentEventHandlers();
 
     initDeleteModalDialog();
+    initCreateBranchModalDialog();
 
     getRepoList(model.selectors.repo);
 
@@ -44,6 +45,11 @@ $(function () {
         createRepo();
     });
 
+    model.buttons.createBranch.click(function () {
+        createBranch();
+    });
+
+
     model.buttons.query.click(function () {
         doQuery();
     });
@@ -57,11 +63,13 @@ function initializeModel() {
 
     model.buttons.query = $('#queryButton');
     model.buttons.createRepo = $('#createRepoButton');
+    model.buttons.createBranch = $('#createBranchButton');
     model.buttons.deleteRepo = $('#deleteRepoButton');
     model.buttons.deleteRepoConfirm = $('#deleteConfirmButton');
     model.buttons.deleteRepoConfirmCancel = $('#deleteConfirmCancelButton');
 
     model.inputs.createRepo = $('#createRepoId');
+    model.inputs.createBranch = $('#createBranchInput');
     model.inputs.fulltext = $('#fulltextSearch');
     model.inputs.query = $('#queryInput');
     model.inputs.count = $('#queryCountInput');
@@ -70,8 +78,10 @@ function initializeModel() {
     model.selectors.repo = $('#selectRepoId');
     model.selectors.branch = $('#selectBranchId');
     model.selectors.deleteRepo = $('#deleteRepoSelector');
+    model.selectors.createBranch = $('#createBranchSelector');
 
     model.modals.deleteRepo = $('#deleteModalOpen');
+    model.modals.createBranch = $('#createBranchModalOpen');
 
     model.parts.deleteRepoConfirm = $('#deleteConfirm');
     model.parts.queryResult = $('#queryResultBox');
@@ -169,6 +179,14 @@ function initDeleteModalDialog() {
         getRepoList(model.selectors.deleteRepo);
         enableElement(model.selectors.deleteRepo);
     });
+}
+
+function initCreateBranchModalDialog() {
+    model.modals.createBranch.click(function () {
+        console.log("Open branch modal");
+        getRepoList(model.selectors.createBranch);
+    });
+
 }
 
 function renderDeleteConfirmMessage(element, result) {
@@ -283,6 +301,33 @@ function createRepo() {
             getRepoList(model.selectors.repo);
             repoIdInput.val('');
             setStartLayout();
+        }
+    });
+}
+
+
+function createBranch() {
+    var repoIdInput = model.selectors.createBranch;
+    var repoId = repoIdInput.val();
+    var branchId = model.inputs.createBranch.val();
+
+    var data = {
+        repoId: repoId,
+        branchId: branchId
+    };
+
+    console.log("Data create branch: ", data);
+
+    jQuery.ajax({
+        url: createBranchServiceUrl,
+        cache: false,
+        data: data,
+        type: 'POST',
+        success: function (result) {
+            renderMessage(result);
+            //  getRepoList(model.selectors.repo);
+            //  repoIdInput.val('');
+            //setStartLayout();
         }
     });
 }

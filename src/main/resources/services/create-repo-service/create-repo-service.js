@@ -17,7 +17,6 @@ exports.post = function (req) {
         return returnError("create repo with id [" + repoId + "] failed: " + err);
     }
 
-
     var createdRepo;
 
     try {
@@ -28,7 +27,6 @@ exports.post = function (req) {
 
     return returnMessage("Repository [" + createdRepo.id + "] created");
 };
-
 
 function createRepo(repoId) {
     return repoLib.create({
