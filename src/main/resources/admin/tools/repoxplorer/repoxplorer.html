@@ -31,7 +31,6 @@
     <!-- jquery-textcomplete -->
     <script src="{{assetsUrl}}/js/jquery.textcomplete.min.js"></script>
 
-
     <!-- Bootstrap treev -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
@@ -66,9 +65,9 @@
                 Manage
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#">Create new repo</a>
-                <a class="dropdown-item" href="#">Delete repo</a>
-                <a class="dropdown-item" href="#">Create branch</a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#createRepoModal">Create new repo</a>
+                <a id="deleteModalOpen" class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteRepoModal">Delete repo</a>
+                <a class="dropdown-item" href="#createBranchModal">Create branch</a>
             </div>
         </li>
         <li class="nav-item active">
@@ -139,7 +138,7 @@
                     <input id="querySortInput" type="text" class="form-control" placeholder="<query expr>">
 
                     <label for="queryCountInput">count</label>
-                    <input id="queryCountInput" type="text" value="25" class="form-control">
+                    <input id="queryCountInput" type="text" value="15" class="form-control">
 
                     <label for="queryStart">start</label>
                     <input id="queryStart" type="text" value="0" class="form-control">
@@ -174,6 +173,63 @@
     <div id="integrityPanel" class="hidden">
         <h2>Check Integrity!</h2>
     </div>
+
+
+    <div class="modal fade" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Create new repository</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="createRepoId">Repository id: </label>
+                    <input id="createRepoId" type="text">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="createRepoButton" type="button" class="btn btn-primary">Create repository</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteRepoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="deleteRepoModalLabel">Delete repository</h4>
+                </div>
+                <div class="modal-body">
+                    <select id="deleteRepoSelector" class="custom-select" selected>Choose repository</select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="deleteRepoButton" class="btn btn-primary" data-toggle="confirmation">Delete repository
+                    </button>
+                </div>
+
+                <div class="modal-body" id="deleteConfirm">
+                    <p>Confirm deletion of the repo with the following branches:</p>
+                    <div id="deleteConfirmMessage">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="deleteConfirmCancelButton" class="btn btn-success">No, abort!
+                        </button>
+                        <button type="button" id="deleteConfirmButton" class="btn btn-danger">Yes, delete it!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 
