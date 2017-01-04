@@ -1,6 +1,6 @@
 $(function () {
 
-    $(QUERY_INPUT).textcomplete([
+    $('#queryInput').textcomplete([
         {
             match: /\b(\w+|"|'\)|"\)|')$/,
             search: function (term, callback) {
@@ -17,7 +17,7 @@ $(function () {
 
 function getSuggestorValues(term, callback) {
 
-    var queryInput = $(QUERY_INPUT);
+    var queryInput = $('#queryInput');
 
     var data = {
         term: term,
@@ -31,7 +31,7 @@ function getSuggestorValues(term, callback) {
         data: data,
         success: function (result) {
             callback(result.suggester.suggestions);
-            updateQueryInput(result, $(QUERY_INPUT));
+            updateQueryInput(result, $('#queryInput'));
         }
     });
 }

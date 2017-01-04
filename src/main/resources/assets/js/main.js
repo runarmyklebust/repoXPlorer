@@ -1,26 +1,9 @@
-var REPO_SELECTOR_ID = "#selectRepoId";
-var REPO_INFO_BOX = "#repoInfoBox";
-
-var BRANCH_SELECTOR_ID = "#selectBranchId";
-
-var CREATE_REPO_BUTTON = '#createRepoButton';
 var CREATE_REPO_INPUT = '#createRepoId';
 
-var DELETE_CONFIRM_DIALOG = '#deleteConfirm';
-var DELETE_CONFIRM_CANCEL_BUTTON = "#deleteConfirmCancelButton";
-var DELETE_MODAL_OPEN = "#deleteModalOpen";
 var DELETE_CONFIRM_MESSAGE = "#deleteConfirmMessage";
 
+
 var QUERY_PANEL = '#queryPanel';
-var QUERY_BUTTON = '#queryButton';
-var QUERY_FULLTEXT = "#fulltextSearch";
-var QUERY_INPUT = '#queryInput';
-var QUERY_COUNT = '#queryCountInput';
-var QUERY_RESULT_BOX = "#queryResultBox";
-var QUERY_SORT_INPUT = "#querySortInput";
-
-var MESSAGE_BOX = '#messageBox';
-
 var BROWSE_PANEL = '#browsePanel';
 var DIFF_PANEL = '#diffPanel';
 var INTEGRITY_PANEL = '#integrityPanel';
@@ -29,11 +12,15 @@ var panels = [QUERY_PANEL, BROWSE_PANEL, DIFF_PANEL, INTEGRITY_PANEL];
 var EVENT_REPO_CONNECTED = "repoXPlorer:repo:connected";
 var EVENT_REPO_DISCONNECTED = "repoXPlorer:repo:disconnected";
 
+var MESSAGE_BOX = '#messageBox';
 
 var model = {
     buttons: {},
     selectors: {},
-    inputs: {}
+    inputs: {},
+    modals: {},
+    parts: {},
+    input: {}
 };
 
 $(function () {
@@ -46,23 +33,23 @@ $(function () {
 
     initDeleteModalDialog();
 
-    getRepoList($(REPO_SELECTOR_ID));
+    getRepoList(model.selectors.repo);
 
-    $(REPO_SELECTOR_ID).change(function () {
-        $(REPO_SELECTOR_ID).trigger(EVENT_REPO_DISCONNECTED);
+    model.selectors.repo.change(function () {
+        model.selectors.repo.trigger(EVENT_REPO_DISCONNECTED);
         setChangeRepoLayout();
         getRepoInfo(this.value);
     });
 
-    $(BRANCH_SELECTOR_ID).change(function () {
-        $(BRANCH_SELECTOR_ID).trigger(EVENT_REPO_CONNECTED);
+    model.selectors.branch.change(function () {
+        model.selectors.branch.trigger(EVENT_REPO_CONNECTED);
     });
 
-    $(CREATE_REPO_BUTTON).click(function () {
+    model.buttons.createRepo.click(function () {
         createRepo();
     });
 
-    $(QUERY_BUTTON).click(function () {
+    model.buttons.query.click(function () {
         doQuery();
     });
 
@@ -72,32 +59,49 @@ $(function () {
 });
 
 function initializeModel() {
-    model.buttons.deleteConfirm = $('#deleteConfirmButton');
-    model.buttons.delete = $('#deleteRepoButton');
-    model.selectors.delete = $('#deleteRepoSelector');
+
+    model.buttons.query = $('#queryButton');
+    model.buttons.createRepo = $('#createRepoButton');
+    model.buttons.deleteRepo = $('#deleteRepoButton');
+    model.buttons.deleteRepoConfirm = $('#deleteConfirmButton');
+    model.buttons.deleteRepoConfirmCancel = $('#deleteConfirmCancelButton');
+
+    model.inputs.fulltext = $('#fulltextSearch');
+    model.inputs.query = $('#queryInput');
+    model.inputs.count = $('#queryCountInput');
+    model.inputs.order = $('#querySortInput');
+
+    model.selectors.repo = $('#selectRepoId');
+    model.selectors.branch = $('#selectBranchId');
+    model.selectors.deleteRepo = $('#deleteRepoSelector');
+
+    model.modals.deleteRepo = $('#deleteModalOpen');
+
+    model.parts.deleteRepoConfirm = $('#deleteConfirm');
+    model.parts.queryResult = $('#queryResultBox');
 }
 
 function initComponentEventHandlers() {
 
     $(document).on(EVENT_REPO_CONNECTED, function () {
-        enableElement($(QUERY_FULLTEXT));
-        enabledButton($(QUERY_BUTTON));
+        enableElement(model.inputs.fulltext);
+        enabledButton(model.buttons.query);
     });
 
     $(document).on(EVENT_REPO_DISCONNECTED, function () {
-        disableElement($(QUERY_FULLTEXT));
-        disableButton($(QUERY_BUTTON));
+        disableElement(model.inputs.fulltext);
+        disableButton(model.buttons.query);
     });
 }
 
 function initQueryModeListener() {
-    $(QUERY_FULLTEXT).keyup(function () {
+    model.inputs.fulltext.keyup(function () {
         delay(function () {
             toggleFulltextMode();
         }, 200);
     });
 
-    $(QUERY_INPUT).keyup(function () {
+    model.inputs.query.keyup(function () {
         delay(function () {
             toggleQueryMode();
         }, 200);
@@ -105,39 +109,38 @@ function initQueryModeListener() {
 }
 
 function toggleQueryMode() {
-    if ($(QUERY_INPUT).val()) {
-        disableElement($(QUERY_FULLTEXT));
+    if (model.inputs.query.val()) {
+        disableElement(model.inputs.fulltext);
     } else {
-        enableElement($(QUERY_FULLTEXT));
+        enableElement(model.inputs.fulltext);
     }
 }
 
 function toggleFulltextMode() {
-    if ($(QUERY_FULLTEXT).val()) {
-        disableElement($(QUERY_INPUT));
+    if (model.inputs.fulltext.val()) {
+        disableElement(model.inputs.query);
         doQuery();
     } else {
-        enableElement($(QUERY_INPUT));
-        $(QUERY_RESULT_BOX).hide();
+        enableElement(model.inputs.query);
+        model.parts.queryResult.hide();
     }
 }
 
-
 function initDeleteModalDialog() {
 
-    $(DELETE_MODAL_OPEN).click(function () {
-        enableElement(model.selectors.delete);
-        $(DELETE_CONFIRM_DIALOG).hide();
-        disableButton(model.buttons.delete);
-        getRepoList(model.selectors.delete);
+    model.modals.deleteRepo.click(function () {
+        enableElement(model.selectors.deleteRepo);
+        model.parts.deleteRepoConfirm.hide();
+        disableButton(model.buttons.deleteRepo);
+        getRepoList(model.selectors.deleteRepo);
     });
 
-    model.selectors.delete.change(function () {
-        enabledButton(model.buttons.delete);
+    model.selectors.deleteRepo.change(function () {
+        enabledButton(model.buttons.deleteRepo);
     });
 
-    $(DELETE_REPO_BUTTON).click(function () {
-        var selectedRepo = model.selectors.delete.val();
+    model.buttons.deleteRepo.click(function () {
+        var selectedRepo = model.selectors.deleteRepo.val();
         var data = {
             repoId: selectedRepo
         };
@@ -148,26 +151,26 @@ function initDeleteModalDialog() {
             data: data,
             success: function (result) {
                 renderDeleteConfirmMessage($(DELETE_CONFIRM_MESSAGE), result);
-                $(DELETE_CONFIRM_DIALOG).show();
-                disableButton(model.buttons.delete);
-                disableElement(model.selectors.delete);
+                model.parts.deleteRepoConfirm.show();
+                disableButton(model.buttons.deleteRepo);
+                disableElement(model.selectors.deleteRepo);
             }
         });
     });
 
-    model.buttons.deleteConfirm.click(function () {
+    model.buttons.deleteRepoConfirm.click(function () {
         deleteRepo();
-        $(DELETE_CONFIRM_DIALOG).hide();
-        disableButton(model.buttons.delete);
-        getRepoList(model.selectors.delete);
-        enableElement(model.selectors.delete);
+        model.parts.deleteRepoConfirm.hide();
+        disableButton(model.buttons.deleteRepo);
+        getRepoList(model.selectors.deleteRepo);
+        enableElement(model.selectors.deleteRepo);
     });
 
-    $(DELETE_CONFIRM_CANCEL_BUTTON).click(function () {
-        $(DELETE_CONFIRM_DIALOG).hide();
-        disableButton(model.buttons.delete);
-        getRepoList(model.selectors.delete);
-        enableElement(model.selectors.delete);
+    model.buttons.deleteRepoConfirmCancel.click(function () {
+        model.parts.deleteRepoConfirm.hide();
+        disableButton(model.buttons.deleteRepo);
+        getRepoList(model.selectors.deleteRepo);
+        enableElement(model.selectors.deleteRepo);
     });
 }
 
@@ -176,7 +179,9 @@ function renderDeleteConfirmMessage(element, result) {
     var repoInfo = result.repoInfo;
     var branchInfo = repoInfo.branchInfo;
 
-    var html = "<ul>";
+    var html = "<h3>" + result.repoInfo.id + "</h3>";
+    html += "<p>Branches:</p>";
+    html += "<ul>";
     branchInfo.forEach(function (branch) {
         html += '<li>' + branch.branch + ' (' + branch.total + ' nodes)</li>';
     });
@@ -209,11 +214,10 @@ var initializeView = function () {
 };
 
 var setStartLayout = function () {
-    $(REPO_INFO_BOX).hide();
     $(QUERY_PANEL).show();
-    $(QUERY_RESULT_BOX).hide();
-    disableElement($(QUERY_FULLTEXT));
-    disableButton($(QUERY_BUTTON));
+    model.parts.queryResult.hide();
+    disableElement(model.inputs.fulltext);
+    disableButton(model.buttons.query);
 };
 
 function disableElement(element) {
@@ -225,8 +229,7 @@ function enableElement(element) {
 }
 
 var setChangeRepoLayout = function () {
-    $(REPO_INFO_BOX).hide();
-    $(QUERY_RESULT_BOX).hide();
+    model.parts.queryResult.hide();
 };
 
 var disableButton = function (element) {
@@ -260,8 +263,7 @@ var getRepoInfo = function (id) {
         type: 'GET',
         data: data,
         success: function (result) {
-            renderBranchList(result, $(BRANCH_SELECTOR_ID));
-            $(REPO_INFO_BOX).show();
+            renderBranchList(result, model.selectors.branch);
         }
     });
 };
@@ -281,7 +283,7 @@ function createRepo() {
         type: 'POST',
         success: function (result) {
             renderMessage(result);
-            getRepoList($(REPO_SELECTOR_ID));
+            getRepoList(model.selectors.repo);
             repoIdInput.val('');
             setStartLayout();
         }
@@ -289,7 +291,7 @@ function createRepo() {
 }
 
 function deleteRepo() {
-    var repoId = model.selectors.delete.find(":selected").text();
+    var repoId = model.selectors.deleteRepo.find(":selected").text();
 
     var data = {
         repoId: repoId
@@ -302,7 +304,7 @@ function deleteRepo() {
         type: 'POST',
         success: function (result) {
             renderMessage(result);
-            getRepoList($(REPO_SELECTOR_ID));
+            getRepoList(model.selectors.repo);
             setStartLayout();
         }
     });
@@ -310,12 +312,12 @@ function deleteRepo() {
 
 function doQuery() {
 
-    var queryString = $(QUERY_INPUT).val();
-    var fulltext = $(QUERY_FULLTEXT).val();
-    var repoId = $(REPO_SELECTOR_ID).find(":selected").text();
-    var branch = $(BRANCH_SELECTOR_ID).val();
-    var count = $(QUERY_COUNT).val();
-    var sort = $(QUERY_SORT_INPUT).val();
+    var queryString = model.inputs.query.val();
+    var fulltext = model.inputs.fulltext.val();
+    var repoId = model.selectors.repo.find(":selected").text();
+    var branch = model.selectors.branch.val();
+    var count = model.inputs.count.val();
+    var sort = model.inputs.order.val();
 
     var data = {
         repoId: repoId,
@@ -332,7 +334,7 @@ function doQuery() {
         data: data,
         type: 'GET',
         success: function (result) {
-            renderQueryResult(result, $(QUERY_RESULT_BOX));
+            renderQueryResult(result, model.parts.queryResult);
         }
     });
 }
