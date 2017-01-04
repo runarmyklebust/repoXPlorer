@@ -1,7 +1,4 @@
-var CREATE_REPO_INPUT = '#createRepoId';
-
 var DELETE_CONFIRM_MESSAGE = "#deleteConfirmMessage";
-
 
 var QUERY_PANEL = '#queryPanel';
 var BROWSE_PANEL = '#browsePanel';
@@ -11,8 +8,6 @@ var panels = [QUERY_PANEL, BROWSE_PANEL, DIFF_PANEL, INTEGRITY_PANEL];
 
 var EVENT_REPO_CONNECTED = "repoXPlorer:repo:connected";
 var EVENT_REPO_DISCONNECTED = "repoXPlorer:repo:disconnected";
-
-var MESSAGE_BOX = '#messageBox';
 
 var model = {
     buttons: {},
@@ -66,6 +61,7 @@ function initializeModel() {
     model.buttons.deleteRepoConfirm = $('#deleteConfirmButton');
     model.buttons.deleteRepoConfirmCancel = $('#deleteConfirmCancelButton');
 
+    model.inputs.createRepo = $('#createRepoId');
     model.inputs.fulltext = $('#fulltextSearch');
     model.inputs.query = $('#queryInput');
     model.inputs.count = $('#queryCountInput');
@@ -79,6 +75,7 @@ function initializeModel() {
 
     model.parts.deleteRepoConfirm = $('#deleteConfirm');
     model.parts.queryResult = $('#queryResultBox');
+    model.parts.messageBox = $('#messageBox');
 }
 
 function initComponentEventHandlers() {
@@ -209,7 +206,7 @@ function activateNavbar() {
 }
 
 var initializeView = function () {
-    $(MESSAGE_BOX).hide();
+    model.parts.messageBox.hide();
     setStartLayout();
 };
 
@@ -269,7 +266,7 @@ var getRepoInfo = function (id) {
 };
 
 function createRepo() {
-    var repoIdInput = $(CREATE_REPO_INPUT);
+    var repoIdInput = model.inputs.createRepo;
     var repoId = repoIdInput.val();
 
     var data = {
@@ -456,26 +453,28 @@ var renderQueryHit = function (html, hit, itemNum) {
 var renderMessage = function (result) {
 
     var html = "";
-    var messageBox = $(MESSAGE_BOX);
+
+    var timeOut = 2500;
 
     if (result.error) {
+        timeOut = 5000;
         html += result.error;
-        messageBox.removeClass('message').addClass('error');
+        model.parts.messageBox.removeClass('message').addClass('error');
     } else if (result.message) {
         html += result.message;
-        messageBox.removeClass('error').addClass('message');
+        model.parts.messageBox.removeClass('error').addClass('message');
     } else {
         return;
     }
 
     $('#repoMessage').html(html);
 
-    messageBox.show();
+    model.parts.messageBox.show();
 
     setTimeout(function () {
-        messageBox.fadeOut(1000, function () {
+        model.parts.messageBox.fadeOut(1000, function () {
         });
-    }, 2500);
+    }, timeOut);
 };
 
 
@@ -489,3 +488,49 @@ var delay = (function () {
     };
 })();
 
+/** TextCompleter **/
+
+$(function () {
+
+    $('#queryInput').textcomplete([
+        {
+            match: /\b(\w+|"|'\)|"\)|')$/,
+            search: function (term, callback) {
+                getSuggestorValues(term, callback);
+            },
+            index: 1,
+            replace: function (word) {
+                return word + '';
+            }
+        }
+    ]);
+});
+
+function getSuggestorValues(term, callback) {
+
+    var queryInput = $('#queryInput');
+
+    var data = {
+        term: term,
+        fullValue: queryInput.val()
+    };
+
+    jQuery.ajax({
+        url: autocompleteServiceUrl,
+        cache: true,
+        type: 'GET',
+        data: data,
+        success: function (result) {
+            callback(result.suggester.suggestions);
+            updateQueryInput(result, $('#queryInput'));
+        }
+    });
+}
+
+var updateQueryInput = function (result, element) {
+    if (!result.suggester.valid) {
+        element.css('color', 'red');
+    } else {
+        element.css('color', 'green');
+    }
+};

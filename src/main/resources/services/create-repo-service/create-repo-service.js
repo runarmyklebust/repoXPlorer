@@ -1,11 +1,5 @@
 var repoLib = require('/lib/xp/repo');
 
-function createRepo(createdRepo, repoId) {
-    return repoLib.create({
-        id: repoId
-    });
-}
-
 exports.post = function (req) {
 
     var repoId = req.params.repoId;
@@ -19,7 +13,6 @@ exports.post = function (req) {
         if (existingRepo) {
             return returnError("repoId [" + repoId + "] already exists");
         }
-
     } catch (err) {
         return returnError("create repo with id [" + repoId + "] failed: " + err);
     }
@@ -35,6 +28,13 @@ exports.post = function (req) {
 
     return returnMessage("Repository [" + createdRepo.id + "] created");
 };
+
+
+function createRepo(repoId) {
+    return repoLib.create({
+        id: repoId
+    });
+}
 
 var returnMessage = function (message) {
     return {
