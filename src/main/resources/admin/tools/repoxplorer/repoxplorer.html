@@ -71,58 +71,27 @@
             </div>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="#queryPanel" onclick="togglePanel('queryPanel')">Query</a>
+            <a class="nav-link" href="#" onclick="togglePanel('queryPanel')">Query</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#browsePanel" onclick="togglePanel('browsePanel')">Browse</a>
+            <a class="nav-link" href="#" onclick="togglePanel('browsePanel')">Browse</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#diffPanel" onclick="togglePanel('diffPanel')">Diff</a>
+            <a class="nav-link" href="#" onclick="togglePanel('diffPanel')">Diff</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#integrityPanel" onclick="togglePanel('integrityPanel')">Integrity check</a>
+            <a class="nav-link" href="#" onclick="togglePanel('integrityPanel')">Integrity check</a>
         </li>
     </ul>
 </nav>
 
 
-<!-- Create connect modal -->
-<!--
-<div id="createRepoModal" class="modal modal-fixed-footer">
-    <div class="modal-content">
-        <h4>Create repository</h4>
-        <p>Repository id must consist of </p>
-        <div class="row">
-            <div class="input-field col s12">
-                <label for="createRepoId">Repository id</label>
-                <input id="createRepoId" type="text">
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <label for="createRepoSettings">Repository settings</label>
-                <input id="createRepoSettings" type="text">
-            </div>
-        </div>
-        <div class="row">
-            <button id="createRepoButton" class="waves-effect waves-light btn">Create</button>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-    </div>
-</div>
--->
-
-
 <main>
-
     <!-- QUERY PANEL -->
     <div id="queryPanel" class="query-panel container-fluid">
-
         <!-- Query input -->
         <div class="col-fixed-400">
-            <form>
+            <form id="queryForm" action="#">
                 <div class="form-group">
                     <label for="fulltextSearch">fulltext/ngram-search</label>
                     <textarea id="fulltextSearch" class="form-control queryInput" placeholder="<word or phrase>"></textarea>
@@ -135,7 +104,7 @@
 
                 <div class="form-group">
                     <label for="querySortInput">orderExpr</label>
-                    <input id="querySortInput" type="text" class="form-control" placeholder="<query expr>">
+                    <input id="querySortInput" type="text" class="form-control" placeholder="<order expr>">
 
                     <label for="queryCountInput">count</label>
                     <input id="queryCountInput" type="text" value="15" class="form-control">
@@ -145,7 +114,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button id="queryButton" class="form-control btn btn-success">doQuery</button>
+                    <button type="button" id="queryButton" class="form-control btn btn-success">doQuery</button>
                 </div>
             </form>
         </div>
@@ -155,9 +124,7 @@
             <div id="repoInfoBox"></div>
             <div id="queryResultBox"></div>
         </div>
-
     </div>
-
 
     <div id="browsePanel" class="hidden">
         <div class="col-fixed-400">
@@ -173,7 +140,6 @@
     <div id="integrityPanel" class="hidden">
         <h2>Check Integrity!</h2>
     </div>
-
 
     <div class="modal fade" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -255,9 +221,7 @@
             </div>
         </div>
     </div>
-
 </main>
-
 
 <div id="messageBox" class="row messageBox">
     <span id="repoMessage"></span>

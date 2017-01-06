@@ -48,8 +48,7 @@ $(function () {
     model.buttons.createBranch.click(function () {
         createBranch();
     });
-
-
+    
     model.buttons.query.click(function () {
         doQuery();
     });
@@ -230,6 +229,8 @@ var initializeView = function () {
 
 var setStartLayout = function () {
     $(QUERY_PANEL).show();
+    $(BROWSE_PANEL).hide();
+    $(DIFF_PANEL).hide();
     model.parts.queryResult.hide();
     disableElement(model.inputs.fulltext);
     disableButton(model.buttons.query);

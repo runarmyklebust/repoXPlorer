@@ -26,12 +26,10 @@ exports.post = function (req) {
         contextLib.run({
             repository: repoId
         }, function () {
-
             var result = repoLib.createBranch({
                 branchId: branchId
             });
             log.info('Branch [' + result.id + '] created');
-
         })
     }
     catch

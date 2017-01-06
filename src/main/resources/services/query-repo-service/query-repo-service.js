@@ -31,7 +31,7 @@ exports.get = function (req) {
 
     var queryEnd = new Date().getTime() - queryStart;
     var queryResult = createQueryResult(result, queryEnd, repo);
-    
+
     return {
         contentType: 'application/json',
         body: {
