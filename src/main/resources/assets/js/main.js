@@ -48,7 +48,7 @@ $(function () {
     model.buttons.createBranch.click(function () {
         createBranch();
     });
-    
+
     model.buttons.query.click(function () {
         doQuery();
     });
@@ -542,8 +542,10 @@ $(function () {
         {
             match: /\b(\w+|"|'\)|"\)|')$/,
             search: function (term, callback) {
-                getSuggestorValues(term, callback);
+                getSuggesterValues(term, callback);
             },
+            cache: true,
+            context: contextFunc,
             index: 1,
             replace: function (word) {
                 return word + '';
@@ -552,7 +554,7 @@ $(function () {
     ]);
 });
 
-function getSuggestorValues(term, callback) {
+function getSuggesterValues(term, callback) {
 
     var queryInput = $('#queryInput');
 
@@ -572,6 +574,10 @@ function getSuggestorValues(term, callback) {
         }
     });
 }
+
+var contextFunc = function (text) {
+    return text.toLowerCase();
+};
 
 var updateQueryInput = function (result, element) {
     if (!result.suggester.valid) {
