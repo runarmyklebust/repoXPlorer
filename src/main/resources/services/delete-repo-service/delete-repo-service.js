@@ -20,6 +20,8 @@ exports.post = function (req) {
 
     var deletedRepo = repoLib.delete(repoId);
 
+    repoLib.refresh();
+
     return returnMessage("Repository [" + repoId + "] deleted");
 };
 

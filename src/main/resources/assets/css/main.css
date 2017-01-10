@@ -1,3 +1,7 @@
+html {
+    overflow-y: scroll;
+}
+
 /* The alert message box */
 
 .messageBox {
@@ -9,6 +13,7 @@
     left: 0;
     text-align: center;
     font-size: large;
+    z-index: 200;
 }
 
 .error {
@@ -19,9 +24,35 @@
     background-color: darkgreen; /* Red */
 }
 
-.left-menu {
+.navbar form {
+    margin-bottom: 0em;
+}
+
+main {
+    margin-top: 70px;
+}
+
+.col-fixed-400 {
+    padding-left: 5px;
+    padding-right: 10px;
+    width: 400px;
+    position: fixed;
     height: 100%;
-    box-shadow: 2px 0px 2px #888888;
+    box-shadow: lightgray 2px 2px 2px;
+    z-index: 100;
+}
+
+.query-panel .col-offset-400 {
+    padding-left: 450px;
+    z-index: 0;
+}
+
+.query-panel .card {
+    margin-bottom: 0;
+}
+
+.queryInput {
+    height: 100px;
 }
 
 .queryResultItem {
@@ -62,3 +93,6 @@
     cursor: pointer;
 }
 
+.hidden {
+    display: none;
+}
