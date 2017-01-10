@@ -13,6 +13,7 @@ exports.get = function (req) {
     var fulltext = req.params.fulltext ? req.params.fulltext : "";
     var branch = req.params.branch ? req.params.branch : 'master';
     var count = req.params.count ? req.params.count : 25;
+    var start = req.params.start ? req.params.start : 0;
     var sort = req.params.sort;
 
     var repo = connect(repoId, branch);
@@ -23,6 +24,7 @@ exports.get = function (req) {
         var result = repo.query({
             query: query ? query : createFulltextQuery(fulltext),
             count: count,
+            start: start,
             sort: sort
         });
     } catch (err) {
@@ -30,7 +32,7 @@ exports.get = function (req) {
     }
 
     var queryEnd = new Date().getTime() - queryStart;
-    var queryResult = createQueryResult(result, queryEnd, repo);
+    var queryResult = createQueryResult(result, queryEnd, repo, start);
 
     return {
         contentType: 'application/json',
@@ -44,8 +46,9 @@ function createFulltextQuery(value) {
     return "fulltext('_allText', '" + value + "', 'AND') OR ngram('_allText', '" + value + "', 'AND')";
 }
 
-function createQueryResult(result, queryEnd, repo) {
+function createQueryResult(result, queryEnd, repo, start) {
     var queryResult = {
+        start: start,
         total: result.total,
         count: result.count,
         queryTime: queryEnd

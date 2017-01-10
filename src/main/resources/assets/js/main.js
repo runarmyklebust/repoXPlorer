@@ -15,7 +15,8 @@ var model = {
     inputs: {},
     modals: {},
     parts: {},
-    input: {}
+    input: {},
+    links: {}
 };
 
 $(function () {
@@ -56,8 +57,8 @@ $(function () {
     initQueryModeListener();
 
     initTextComplete();
-    
-    activateNavbar();
+
+    //activateNavbar();
 });
 
 function initializeModel() {
@@ -74,6 +75,7 @@ function initializeModel() {
     model.inputs.fulltext = $('#fulltextSearch');
     model.inputs.query = $('#queryInput');
     model.inputs.count = $('#queryCountInput');
+    model.inputs.start = $('#queryStart');
     model.inputs.order = $('#querySortInput');
 
     model.selectors.repo = $('#selectRepoId');
@@ -81,8 +83,13 @@ function initializeModel() {
     model.selectors.deleteRepo = $('#deleteRepoSelector');
     model.selectors.createBranch = $('#createBranchSelector');
 
-    model.modals.deleteRepo = $('#deleteModalOpen');
-    model.modals.createBranch = $('#createBranchModalOpen');
+    model.links.deleteRepo = $('#deleteModalOpen');
+    model.links.createBranch = $('#createBranchModalOpen');
+    model.links.createRepo = $('#createRepoModalOpen');
+
+    model.modals.deleteRepo = $('#deleteRepoModal');
+    model.modals.createBranch = $('#createBranchModal');
+    model.modals.createRepo = $('#createRepoModal');
 
     model.parts.deleteRepoConfirm = $('#deleteConfirm');
     model.parts.queryResult = $('#queryResultBox');
@@ -136,7 +143,7 @@ function toggleFulltextMode() {
 
 function initDeleteModalDialog() {
 
-    model.modals.deleteRepo.click(function () {
+    model.links.deleteRepo.click(function () {
         enableElement(model.selectors.deleteRepo);
         model.parts.deleteRepoConfirm.hide();
         disableButton(model.buttons.deleteRepo);
@@ -183,7 +190,7 @@ function initDeleteModalDialog() {
 }
 
 function initCreateBranchModalDialog() {
-    model.modals.createBranch.click(function () {
+    model.links.createBranch.click(function () {
         console.log("Open branch modal");
         getRepoList(model.selectors.createBranch);
     });
@@ -300,9 +307,10 @@ function createRepo() {
         data: data,
         type: 'POST',
         success: function (result) {
-            renderMessage(result);
             getRepoList(model.selectors.repo);
             repoIdInput.val('');
+            model.modals.createRepo.modal('hide');
+            renderMessage(result);
             setStartLayout();
         }
     });
@@ -327,6 +335,7 @@ function createBranch() {
         data: data,
         type: 'POST',
         success: function (result) {
+            model.modals.createBranch.modal('hide');
             renderMessage(result);
             //  getRepoList(model.selectors.repo);
             //  repoIdInput.val('');
@@ -348,6 +357,7 @@ function deleteRepo() {
         data: data,
         type: 'POST',
         success: function (result) {
+            model.modals.deleteRepo.modal('hide');
             renderMessage(result);
             getRepoList(model.selectors.repo);
             setStartLayout();
@@ -362,6 +372,7 @@ function doQuery() {
     var repoId = model.selectors.repo.find(":selected").text();
     var branch = model.selectors.branch.val();
     var count = model.inputs.count.val();
+    var start = model.inputs.start.val();
     var sort = model.inputs.order.val();
 
     var data = {
@@ -370,6 +381,7 @@ function doQuery() {
         fulltext: fulltext,
         branch: branch,
         count: count,
+        start: start,
         sort: sort
     };
 
@@ -456,8 +468,11 @@ var renderQueryResult = function (result, renderer) {
 
 function renderQueryMetaData(html, queryResult) {
 
+    var to = eval(queryResult.start + queryResult.count);
+    var from = queryResult.start;
+
     html += "<p>QueryTime: " + queryResult.queryTime + "ms, FetchTime: " + queryResult.fetchTime + "ms</p>";
-    html += "<p>Showing hits: " + queryResult.count + " of " + queryResult.total + "</p>";
+    html += "<p>Showing hits: " + from + "->" + to + " of " + queryResult.total + "</p>";
 
     return html;
 }

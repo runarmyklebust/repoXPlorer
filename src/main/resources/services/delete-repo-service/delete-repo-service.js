@@ -18,7 +18,7 @@ exports.post = function (req) {
         return returnError("repoId [" + repoId + "] does not exists");
     }
 
-    var deletedRepo = repoLib.delete(repoId);
+    repoLib.delete(repoId);
 
     repoLib.refresh();
 

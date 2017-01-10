@@ -58,22 +58,21 @@
         <select id="selectBranchId" class="custom-select" selected>Choose branch</select>
     </form>
     <ul class="nav navbar-nav float-xs-right">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                Manage
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#createRepoModal">Create new repo</a>
-                <a id="createBranchModalOpen" href="#" class="dropdown-item" data-toggle="modal" data-target="#createBranchModal">Create
-                    branch</a>
-                <a id="deleteModalOpen" href="#" class="dropdown-item" data-toggle="modal" data-target="#deleteRepoModal">Delete repo</a>
-            </div>
+        <li class="nav-item">
+            <a class="nav-link active" href="#" id="createRepoModalOpen" data-toggle="modal" data-target="#createRepoModal">Create Repo</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="#" id="createBranchModalOpen" data-toggle="modal" data-target="#createBranchModal">Create
+                Branch</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="#" id="deleteModalOpen" data-toggle="modal" data-target="#deleteRepoModal">Delete Repo</a>
+        </li>
+        <!--
         <li class="nav-item active">
             <a class="nav-link" href="#" onclick="togglePanel('queryPanel')">Query</a>
         </li>
-        <!--  <li class="nav-item">
+        <li class="nav-item">
               <a class="nav-link" href="#" onclick="togglePanel('browsePanel')">Browse</a>
           </li>
           <li class="nav-item">
@@ -97,6 +96,8 @@
                     <label for="fulltextSearch">fulltext/ngram-search</label>
                     <textarea id="fulltextSearch" class="form-control queryInput" placeholder="<start typing>"></textarea>
                 </div>
+
+                <hr/>
 
                 <div class="form-group">
                     <label for="queryInput">query-expression</label>
