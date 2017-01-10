@@ -55,6 +55,8 @@ $(function () {
 
     initQueryModeListener();
 
+    initTextComplete();
+    
     activateNavbar();
 });
 
@@ -536,9 +538,9 @@ var delay = (function () {
 
 /** TextCompleter **/
 
-$(function () {
+var initTextComplete = function () {
 
-    $('#queryInput').textcomplete([
+    var strategies = [
         {
             match: /\b(\w+|"|'\)|"\)|')$/,
             search: function (term, callback) {
@@ -551,8 +553,14 @@ $(function () {
                 return word + '';
             }
         }
-    ]);
-});
+    ];
+
+    var option = {
+        placement: ""
+    };
+
+    $('#queryInput').textcomplete(strategies, option);
+};
 
 function getSuggesterValues(term, callback) {
 
