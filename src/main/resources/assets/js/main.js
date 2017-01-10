@@ -468,8 +468,10 @@ var renderQueryResult = function (result, renderer) {
 
 function renderQueryMetaData(html, queryResult) {
 
-    var to = eval(queryResult.start + queryResult.count);
-    var from = queryResult.start;
+    var start = Number(queryResult.start);
+    var count = Number(queryResult.count);
+    var to = start + count;
+    var from = start + 1;
 
     html += "<p>QueryTime: " + queryResult.queryTime + "ms, FetchTime: " + queryResult.fetchTime + "ms</p>";
     html += "<p>Showing hits: " + from + "->" + to + " of " + queryResult.total + "</p>";
