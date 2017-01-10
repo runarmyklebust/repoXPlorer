@@ -1,22 +1,27 @@
 <html>
 <head>
-    <title>RepoXPlorer</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RepoXPlorer</title>
 
     <link rel="stylesheet" type="text/css" href="{{assetsUrl}}/css/main.css"/>
 
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <script
-            src="https://code.jquery.com/jquery-3.1.1.min.js"
-            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-            crossorigin="anonymous"></script>
+    <!-- JQuery -->
+    <script src="{{assetsUrl}}/js/jquery-3.1.1.min.js"></script>
 
-    <!-- MaterializeCss-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css"
+          integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js"
+            integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"
+            integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
 
     <!-- prism -->
     <link href="{{assetsUrl}}/css/prism.css" rel="stylesheet"/>
@@ -25,8 +30,10 @@
     <!-- jquery-textcomplete -->
     <script src="{{assetsUrl}}/js/jquery.textcomplete.min.js"></script>
 
+    <!-- Bootstrap treev -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
-    <script src="{{assetsUrl}}/js/textcompleter.js"></script>
+    <script src="{{assetsUrl}}/js/browse.js"></script>
 
     <script src="{{jsUrl}}"></script>
     <script>
@@ -35,7 +42,9 @@
         var deleteRepoServiceUrl = '{{deleteRepoServiceUrl}}';
         var createRepoServiceUrl = '{{createRepoServiceUrl}}';
         var queryRepoServiceUrl = '{{queryRepoServiceUrl}}';
-        var autocompleteServiceUrl = '{{autocompleteServiceUrl}}'
+        var autocompleteServiceUrl = '{{autocompleteServiceUrl}}';
+        var browseServiceUrl = '{{browseServiceUrl}}';
+        var createBranchServiceUrl = '{{createBranchServiceUrl}}';
     </script>
 
 </head>
@@ -43,112 +52,177 @@
 
 
 <!-- Top -->
-<nav>
-    <div class="nav-wrapper blue">
-        <a href="#" class="brand-logo right">Repo XPlorer</a>
-        <ul id="nav-mobile" class="left hide-on-med-and-down">
-            <li><a href="#createRepoModal" class="modal-trigger">Create</a></li>
-        </ul>
-    </div>
+<nav class="navbar navbar-fixed-top navbar-dark bg-primary">
+    <form class="form-inline float-xs-left">
+        <select id="selectRepoId" class="custom-select" selected>Choose repository</select>
+        <select id="selectBranchId" class="custom-select" selected>Choose branch</select>
+    </form>
+    <ul class="nav navbar-nav float-xs-right">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                Manage
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#createRepoModal">Create new repo</a>
+                <a id="createBranchModalOpen" href="#" class="dropdown-item" data-toggle="modal" data-target="#createBranchModal">Create
+                    branch</a>
+                <a id="deleteModalOpen" href="#" class="dropdown-item" data-toggle="modal" data-target="#deleteRepoModal">Delete repo</a>
+            </div>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="#" onclick="togglePanel('queryPanel')">Query</a>
+        </li>
+        <!--  <li class="nav-item">
+              <a class="nav-link" href="#" onclick="togglePanel('browsePanel')">Browse</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#" onclick="togglePanel('diffPanel')">Diff</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#" onclick="togglePanel('integrityPanel')">Integrity check</a>
+          </li>
+          -->
+    </ul>
 </nav>
 
-<!-- Create connect modal -->
-<div id="createRepoModal" class="modal modal-fixed-footer">
-    <div class="modal-content">
-        <h4>Create repository</h4>
-        <p>Repository id must consist of </p>
-        <div class="row">
-            <div class="input-field col s12">
-                <label for="createRepoId">Repository id</label>
-                <input id="createRepoId" type="text">
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <label for="createRepoSettings">Repository settings</label>
-                <input id="createRepoSettings" type="text">
-            </div>
-        </div>
-        <div class="row">
-            <button id="createRepoButton" class="waves-effect waves-light btn">Create</button>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-    </div>
-</div>
 
-
-<!-- Main -->
-
-<div class="row">
-
-    <!-- Left pane -->
-    <div class="left-menu col s4">
-        <div id="repoSelector" class="row">
-            <div id="selectRepo" class="input-field col s12">
-                <select id="selectRepoId" selected>Choose repository</select>
-                <button id="deleteRepoButton" class="waves-effect waves-light red btn">Delete</button>
-            </div>
-        </div>
-        <div class="row">
-            <div id="selectBranch" class="input-field col s12">
-                <select id="selectBranchId" selected>Choose branch</select>
-            </div>
-        </div>
-
-        <div id="query" class="row">
-            <div class="input-field col s12">
-                <div class="row input-field">
-                    <textarea id="queryInput" class="textarea form-control" placeholder="<query expr>"></textarea>
+<main>
+    <!-- QUERY PANEL -->
+    <div id="queryPanel" class="query-panel container-fluid">
+        <!-- Query input -->
+        <div class="col-fixed-400">
+            <form id="queryForm" action="#">
+                <div class="form-group">
+                    <label for="fulltextSearch">fulltext/ngram-search</label>
+                    <textarea id="fulltextSearch" class="form-control queryInput" placeholder="<start typing>"></textarea>
                 </div>
 
-            </div>
-            <div class="row">
-                <div class="input-field col s8">
-                    <input id="querySortInput" type="text" class="validate">
+                <div class="form-group">
+                    <label for="queryInput">query-expression</label>
+                    <textarea id="queryInput" class="form-control queryInput" placeholder="<query expr>"></textarea>
+                </div>
+
+                <div class="form-group">
                     <label for="querySortInput">orderExpr</label>
-                </div>
-                <div class="input-field col s2">
-                    <input id="queryCountInput" type="text" value="25" class="validate">
+                    <input id="querySortInput" type="text" class="form-control" placeholder="<order expr>">
+
                     <label for="queryCountInput">count</label>
-                </div>
-                <div class="input-field col s2">
-                    <input id="queryStart" type="text" value="0" class="validate">
+                    <input id="queryCountInput" type="text" value="15" class="form-control">
+
                     <label for="queryStart">start</label>
+                    <input id="queryStart" type="text" value="0" class="form-control">
                 </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input id="queryAggs" type="text" class="validate">
-                    <label for="queryAggs">Aggregations</label>
+
+                <div class="form-group">
+                    <button type="button" id="queryButton" class="form-control btn btn-success">doQuery</button>
                 </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <button id="queryButton" class="waves-effect waves-light btn">doQuery</button>
-                </div>
-            </div>
+            </form>
         </div>
 
-
-    </div>
-
-    <!-- Right pane -->
-    <div class="col s8">
-        <div class="row">
-            <div id="repoInfoBox" class="col s12">
-            </div>
-        </div>
-        <div id="queryResult" class="row">
-            <div id="queryResultBox" class="col s12">
-            </div>
-
+        <!-- Query result -->
+        <div class="col-md-12 col-offset-400">
+            <div id="repoInfoBox"></div>
+            <div id="queryResultBox"></div>
         </div>
     </div>
 
-</div>
+    <div id="browsePanel" class="hidden">
+        <div class="col-fixed-400">
+            <div id="browseTree"></div>
+        </div>
 
+    </div>
+
+    <div id="diffPanel" class="hidden">
+        <h2>Diff!</h2>
+    </div>
+
+    <div id="integrityPanel" class="hidden">
+        <h2>Check Integrity!</h2>
+    </div>
+
+    <div class="modal fade" id="createRepoModal" tabindex="-1" role="dialog" aria-labelledby="createRepoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="createRepoModalLabel">Create new repository</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="createRepoId">Repository id: </label>
+                    <input id="createRepoId" type="text">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="createRepoButton" type="button" class="btn btn-primary">Create repository</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createBranchModal" tabindex="-1" role="dialog" aria-labelledby="createBranchModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="createBranchModalLabel">Create new branch</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select id="createBranchSelector" class="custom-select" selected>Choose repository</select>
+                    </div>
+                    <div class="form-group">
+                        <label for="createBranchInput">Branch id: </label>
+                        <input id="createBranchInput" type="text">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="createBranchButton" type="button" class="btn btn-primary">Create branch</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteRepoModal" tabindex="-1" role="dialog" aria-labelledby="deleteRepoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="deleteRepoModalLabel">Delete repository</h4>
+                </div>
+                <div class="modal-body">
+                    <select id="deleteRepoSelector" class="custom-select" selected>Choose repository</select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="deleteRepoButton" class="btn btn-success" data-toggle="confirmation">Delete repository
+                    </button>
+                </div>
+
+                <div class="modal-body" id="deleteConfirm">
+                    <p>Are you sure that you want to delete this repository</p>
+                    <div id="deleteConfirmMessage">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="deleteConfirmCancelButton" class="btn btn-secondary">No, abort!
+                        </button>
+                        <button type="button" id="deleteConfirmButton" class="btn btn-danger">Yes, delete it!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 
 <div id="messageBox" class="row messageBox">
     <span id="repoMessage"></span>

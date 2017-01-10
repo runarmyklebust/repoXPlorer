@@ -15,7 +15,7 @@ public class FunctionProducer
     extends AbstractProducer
     implements SuggestionProducer
 {
-    private List<String> suggestions = Lists.newArrayList( "fulltext('", "ngram('" );
+    private List<String> suggestions = Lists.newArrayList( "fulltext('", "ngram('", "pathMatch('", "range('" );
 
 
     @Override

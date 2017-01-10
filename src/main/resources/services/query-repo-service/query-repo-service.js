@@ -10,6 +10,7 @@ exports.get = function (req) {
     }
 
     var query = req.params.queryString ? req.params.queryString : "";
+    var fulltext = req.params.fulltext ? req.params.fulltext : "";
     var branch = req.params.branch ? req.params.branch : 'master';
     var count = req.params.count ? req.params.count : 25;
     var sort = req.params.sort;
@@ -17,14 +18,33 @@ exports.get = function (req) {
     var repo = connect(repoId, branch);
 
     var queryStart = new Date().getTime();
-    var result = repo.query({
-        query: query,
-        count: count,
-        sort: sort
-    });
+
+    try {
+        var result = repo.query({
+            query: query ? query : createFulltextQuery(fulltext),
+            count: count,
+            sort: sort
+        });
+    } catch (err) {
+        return returnError("Query failed: " + err);
+    }
 
     var queryEnd = new Date().getTime() - queryStart;
+    var queryResult = createQueryResult(result, queryEnd, repo);
 
+    return {
+        contentType: 'application/json',
+        body: {
+            queryResult: queryResult
+        }
+    }
+};
+
+function createFulltextQuery(value) {
+    return "fulltext('_allText', '" + value + "', 'AND') OR ngram('_allText', '" + value + "', 'AND')";
+}
+
+function createQueryResult(result, queryEnd, repo) {
     var queryResult = {
         total: result.total,
         count: result.count,
@@ -32,8 +52,17 @@ exports.get = function (req) {
     };
 
     var fetchStart = new Date().getTime();
-    var entries = [];
+    var entries = mapQueryHits(result, repo);
 
+    var fetchEnd = new Date().getTime() - fetchStart;
+
+    queryResult.hits = entries;
+    queryResult.fetchTime = fetchEnd;
+    return queryResult;
+}
+
+function mapQueryHits(result, repo) {
+    var entries = [];
     result.hits.forEach(function (hit) {
         var node = repo.get(hit.id);
 
@@ -47,21 +76,8 @@ exports.get = function (req) {
             entries.push(entry);
         }
     );
-
-    var fetchEnd = new Date().getTime() - fetchStart;
-
-    queryResult.hits = entries;
-    queryResult.fetchTime = fetchEnd;
-
-    log.info("result: %s", JSON.stringify(result));
-
-    return {
-        contentType: 'application/json',
-        body: {
-            queryResult: queryResult
-        }
-    }
-};
+    return entries;
+}
 
 var connect = function (repoId, branch) {
 
@@ -71,3 +87,11 @@ var connect = function (repoId, branch) {
     });
 };
 
+var returnError = function (message) {
+    return {
+        contentType: 'application/json',
+        body: {
+            error: message
+        }
+    }
+};
