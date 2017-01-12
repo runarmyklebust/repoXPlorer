@@ -29,6 +29,7 @@ $(function () {
 
     initDeleteModalDialog();
     initCreateBranchModalDialog();
+    initCreateRepoModalDialog();
 
     getRepoList(model.selectors.repo);
 
@@ -143,11 +144,12 @@ function toggleFulltextMode() {
 
 function initDeleteModalDialog() {
 
-    model.links.deleteRepo.click(function () {
+    model.modals.deleteRepo.on('shown.bs.modal', function () {
         enableElement(model.selectors.deleteRepo);
         model.parts.deleteRepoConfirm.hide();
         disableButton(model.buttons.deleteRepo);
         getRepoList(model.selectors.deleteRepo);
+        model.selectors.deleteRepo.focus();
     });
 
     model.selectors.deleteRepo.change(function () {
@@ -190,11 +192,18 @@ function initDeleteModalDialog() {
 }
 
 function initCreateBranchModalDialog() {
-    model.links.createBranch.click(function () {
-        console.log("Open branch modal");
-        getRepoList(model.selectors.createBranch);
-    });
 
+    model.modals.createBranch.on('shown.bs.modal', function () {
+        getRepoList(model.selectors.createBranch);
+        model.selectors.createBranch.focus();
+    });
+}
+
+function initCreateRepoModalDialog() {
+
+    model.modals.createRepo.on('shown.bs.modal', function () {
+        model.inputs.createRepo.focus();
+    })
 }
 
 function renderDeleteConfirmMessage(element, result) {
