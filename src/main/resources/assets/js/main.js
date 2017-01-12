@@ -144,6 +144,8 @@ function toggleFulltextMode() {
 
 function initDeleteModalDialog() {
 
+    model.parts.deleteRepoConfirm.hide();
+
     model.modals.deleteRepo.on('shown.bs.modal', function () {
         enableElement(model.selectors.deleteRepo);
         model.parts.deleteRepoConfirm.hide();
@@ -178,9 +180,6 @@ function initDeleteModalDialog() {
     model.buttons.deleteRepoConfirm.click(function () {
         deleteRepo();
         model.parts.deleteRepoConfirm.hide();
-        disableButton(model.buttons.deleteRepo);
-        getRepoList(model.selectors.deleteRepo);
-        enableElement(model.selectors.deleteRepo);
     });
 
     model.buttons.deleteRepoConfirmCancel.click(function () {
@@ -250,6 +249,8 @@ var setStartLayout = function () {
     $(BROWSE_PANEL).hide();
     $(DIFF_PANEL).hide();
     model.parts.queryResult.hide();
+    model.selectors.branch.val(null);
+    model.selectors.repo.val(null);
     disableElement(model.inputs.fulltext);
     disableButton(model.buttons.query);
 };
@@ -346,9 +347,7 @@ function createBranch() {
         success: function (result) {
             model.modals.createBranch.modal('hide');
             renderMessage(result);
-            //  getRepoList(model.selectors.repo);
-            //  repoIdInput.val('');
-            //setStartLayout();
+            setStartLayout();
         }
     });
 }
@@ -368,8 +367,6 @@ function deleteRepo() {
         success: function (result) {
             model.modals.deleteRepo.modal('hide');
             renderMessage(result);
-            getRepoList(model.selectors.repo);
-            setStartLayout();
         }
     });
 }
