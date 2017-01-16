@@ -102,6 +102,7 @@ function initComponentEventHandlers() {
     $(document).on(EVENT_REPO_CONNECTED, function () {
         enableElement(model.inputs.fulltext);
         enabledButton(model.buttons.query);
+        doQuery();
     });
 
     $(document).on(EVENT_REPO_DISCONNECTED, function () {
@@ -454,10 +455,7 @@ var renderMultipleBranches = function (html, branchInfo) {
 
 var renderQueryResult = function (result, renderer) {
 
-    if (result.error) {
-        renderMessage(result);
-        return;
-    }
+    renderMessage(result);
 
     var queryResult = result.queryResult;
 
@@ -502,16 +500,18 @@ var renderQueryHit = function (html, hit, itemNum) {
 
     html += '<div class="card">';
     html += '  <div class="card-header" role="tab" id="' + headerId + '">';
-    html += '    <a class="collapsed" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
+    html += '    <a class="collapsed nav-link" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
             '" aria-expanded="false" aria-controls="' + collapseId + '">';
     html += hit._path + " - (" + hit._score + ")";
     html += '    </a>';
+    html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
+            '\')">Delete</button>';
     html += '  </div>';
     html += '  <div id="' + collapseId + '" class="collapse" role="tabpanel" aria-labelledby="' + headerId + '">';
     html += '   <div class="card-block">';
     html += '     <pre>';
     html += '       <code class="language-javascript">';
-    html += JSON.stringify(hit.node, null, 4);
+    html += htmlEscape(JSON.stringify(hit.node, null, 4));
     html += '      </code>';
     html += '     </pre>';
     html += '   </div>';
@@ -523,13 +523,26 @@ var renderQueryHit = function (html, hit, itemNum) {
 
 var renderMessage = function (result) {
 
+    console.log("Logging error message");
+
     var html = "";
 
     var timeOut = 2500;
 
-    if (result.error) {
+    var errors = result.errors;
+    if (errors && errors.length > 0) {
         timeOut = 5000;
-        html += result.error;
+        var maxErrors = 10;
+
+        for (var i = 0; i < errors.length && i < maxErrors; i++) {
+            html += '<p>' + errors[i] + '</p>';
+        }
+
+        if (errors.length > maxErrors) {
+            var more = Number(errors.length) - Number(maxErrors);
+            html += '<p>' + more + ' more errors...</p>';
+        }
+
         model.parts.messageBox.removeClass('message').addClass('error');
     } else if (result.message) {
         html += result.message;
@@ -548,6 +561,14 @@ var renderMessage = function (result) {
     }, timeOut);
 };
 
+function htmlEscape(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
 
 /** Utils **/
 
@@ -616,4 +637,27 @@ var updateQueryInput = function (result, element) {
     } else {
         element.css('color', 'green');
     }
+};
+
+var deleteNode = function (nodeId) {
+
+    var repoId = model.selectors.repo.val();
+    var branchId = model.selectors.branch.val();
+
+    var data = {
+        repoId: repoId,
+        branchId: branchId,
+        nodeId: nodeId
+    };
+
+    jQuery.ajax({
+        url: deleteNodeServiceUrl,
+        cache: false,
+        data: data,
+        type: 'POST',
+        success: function (result) {
+            renderMessage(result);
+            doQuery();
+        }
+    });
 };

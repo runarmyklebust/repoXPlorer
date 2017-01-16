@@ -18,7 +18,8 @@ exports.get = function (req) {
         createBranchServiceUrl: getServiceUrl('create-branch-service'),
         queryRepoServiceUrl: getServiceUrl('query-repo-service'),
         browseServiceUrl: getServiceUrl('browse-service'),
-        autocompleteServiceUrl: getServiceUrl('autocomplete-service')
+        autocompleteServiceUrl: getServiceUrl('autocomplete-service'),
+        deleteNodeServiceUrl: getServiceUrl('delete-node-service')
     };
 
     return {

@@ -37,7 +37,8 @@ exports.get = function (req) {
     return {
         contentType: 'application/json',
         body: {
-            queryResult: queryResult
+            queryResult: queryResult,
+            errors: queryResult.errors
         }
     }
 };
@@ -55,22 +56,29 @@ function createQueryResult(result, queryEnd, repo, start) {
     };
 
     var fetchStart = new Date().getTime();
-    var entries = mapQueryHits(result, repo);
+    var mappingResult = mapQueryHits(result, repo);
 
     var fetchEnd = new Date().getTime() - fetchStart;
 
-    queryResult.hits = entries;
+    queryResult.hits = mappingResult.entries;
     queryResult.fetchTime = fetchEnd;
+    queryResult.errors = mappingResult.errors;
     return queryResult;
 }
 
 function mapQueryHits(result, repo) {
     var entries = [];
+    var errors = [];
     result.hits.forEach(function (hit) {
         var node = repo.get(hit.id);
 
+        if (!node) {
+            var message = "Node found in search but not in storage: " + hit.id;
+            log.error(message);
+            errors.push(message);
+        } else {
             var entry = {
-                id: hit.id,
+                _id: hit.id,
                 _score: hit.score,
                 _path: node._path,
                 node: node
@@ -78,12 +86,17 @@ function mapQueryHits(result, repo) {
 
             entries.push(entry);
         }
+
+        }
     );
-    return entries;
+
+    return {
+        entries: entries,
+        errors: errors
+    };
 }
 
 var connect = function (repoId, branch) {
-
     return nodeLib.connect({
         branch: branch,
         repoId: repoId
@@ -91,10 +104,14 @@ var connect = function (repoId, branch) {
 };
 
 var returnError = function (message) {
+
+    var errors = [];
+    errors.push(message);
+
     return {
         contentType: 'application/json',
         body: {
-            error: message
+            errors: errors
         }
     }
 };

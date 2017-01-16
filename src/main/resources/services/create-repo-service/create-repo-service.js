@@ -5,16 +5,16 @@ exports.post = function (req) {
     var repoId = req.params.repoId;
 
     if (!repoId) {
-        return returnError("no repo-id given");
+        return renderError("no repo-id given");
     }
 
     try {
         var existingRepo = repoLib.get(repoId);
         if (existingRepo) {
-            return returnError("repoId [" + repoId + "] already exists");
+            return renderError("repoId [" + repoId + "] already exists");
         }
     } catch (err) {
-        return returnError("create repo with id [" + repoId + "] failed: " + err);
+        return renderError("create repo with id [" + repoId + "] failed: " + err);
     }
 
     var createdRepo;
@@ -22,7 +22,7 @@ exports.post = function (req) {
     try {
         createdRepo = createRepo(repoId);
     } catch (err) {
-        return returnError("create repo with id [" + repoId + "] failed: " + err);
+        return renderError("create repo with id [" + repoId + "] failed: " + err);
     }
 
     return returnMessage("Repository [" + createdRepo.id + "] created");
@@ -43,11 +43,16 @@ var returnMessage = function (message) {
     }
 };
 
-var returnError = function (message) {
+
+var renderError = function (message) {
+
+    var errors = [];
+    errors.push(message);
+
     return {
         contentType: 'application/json',
         body: {
-            error: message
+            errors: errors
         }
     }
 };

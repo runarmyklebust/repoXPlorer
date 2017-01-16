@@ -9,17 +9,17 @@ exports.post = function (req) {
     var repoId = req.params.repoId;
 
     if (!branchId) {
-        return returnError("no branchId given");
+        return renderError("no branchId given");
     }
 
     if (!repoId) {
-        return returnError("no repoId given");
+        return renderError("no repoId given");
     }
 
     var existingRepo = repoLib.get(repoId);
 
     if (!existingRepo) {
-        return returnError("repoId [" + repoId + "] not found");
+        return renderError("repoId [" + repoId + "] not found");
     }
 
     try {
@@ -35,9 +35,9 @@ exports.post = function (req) {
     catch
         (e) {
         if (e.code == 'branchAlreadyExists') {
-            returnError('Branch [features-branch] already exist');
+            renderError('Branch [features-branch] already exist');
         } else {
-            returnError('Unexpected error: ' + e.message);
+            renderError('Unexpected error: ' + e.message);
         }
     }
 
@@ -63,11 +63,15 @@ function contains(a, obj) {
     return false;
 }
 
-var returnError = function (message) {
+var renderError = function (message) {
+
+    var errors = [];
+    errors.push(message);
+
     return {
         contentType: 'application/json',
         body: {
-            error: message
+            errors: errors
         }
     }
 };

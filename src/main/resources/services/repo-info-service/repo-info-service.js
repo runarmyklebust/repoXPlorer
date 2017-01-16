@@ -49,11 +49,16 @@ var getBranchInfo = function (repoId, branch) {
     return branchInfo;
 };
 
+
 var renderError = function (message) {
+
+    var errors = [];
+    errors.push(message);
+
     return {
         contentType: 'application/json',
         body: {
-            error: message
+            errors: errors
         }
     }
 };
