@@ -521,8 +521,6 @@ var renderQueryHit = function (html, hit, itemNum) {
 
 var renderMessage = function (result) {
 
-    console.log("Logging error message");
-
     var html = "";
 
     var timeOut = 2500;
