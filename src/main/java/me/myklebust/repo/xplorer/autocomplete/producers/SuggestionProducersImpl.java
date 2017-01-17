@@ -33,7 +33,6 @@ public class SuggestionProducersImpl
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     public void register( final SuggestionProducer producer )
     {
-        System.out.println( "Register producer [" + producer.name() + "]" );
         this.producerList.add( producer );
     }
 

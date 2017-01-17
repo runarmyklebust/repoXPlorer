@@ -15,13 +15,9 @@
     <script src="{{assetsUrl}}/js/jquery-3.1.1.min.js"></script>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css"
-          integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js"
-            integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"
-            integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{assetsUrl}}/css/bootstrap.min.css">
+    <script src='{{assetsUrl}}/js/tether.min.js'></script>
+    <script src="{{assetsUrl}}/js/bootstrap.min.js"></script>
 
     <!-- prism -->
     <link href="{{assetsUrl}}/css/prism.css" rel="stylesheet"/>
@@ -44,7 +40,6 @@
         var createBranchServiceUrl = '{{createBranchServiceUrl}}';
         var deleteNodeServiceUrl = '{{deleteNodeServiceUrl}}';
     </script>
-
 </head>
 <body>
 
@@ -66,20 +61,6 @@
         <li class="nav-item">
             <a class="nav-link active" href="#" id="deleteModalOpen" data-toggle="modal" data-target="#deleteRepoModal">Delete Repo</a>
         </li>
-        <!--
-        <li class="nav-item active">
-            <a class="nav-link" href="#" onclick="togglePanel('queryPanel')">Query</a>
-        </li>
-        <li class="nav-item">
-              <a class="nav-link" href="#" onclick="togglePanel('browsePanel')">Browse</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="#" onclick="togglePanel('diffPanel')">Diff</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="#" onclick="togglePanel('integrityPanel')">Integrity check</a>
-          </li>
-          -->
     </ul>
 </nav>
 

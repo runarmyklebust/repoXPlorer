@@ -504,8 +504,8 @@ var renderQueryHit = function (html, hit, itemNum) {
             '" aria-expanded="false" aria-controls="' + collapseId + '">';
     html += hit._path + " - (" + hit._score + ")";
     html += '    </a>';
-    html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
-            '\')">Delete</button>';
+    //html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
+    //         '\')">Delete</button>';
     html += '  </div>';
     html += '  <div id="' + collapseId + '" class="collapse" role="tabpanel" aria-labelledby="' + headerId + '">';
     html += '   <div class="card-block">';
