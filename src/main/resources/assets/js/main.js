@@ -502,7 +502,7 @@ var renderQueryHit = function (html, hit, itemNum) {
     html += '  <div class="card-header" role="tab" id="' + headerId + '">';
     html += '    <a class="collapsed" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
             '" aria-expanded="false" aria-controls="' + collapseId + '">';
-    html += hit._path + " - (" + hit._score + ")";
+    html += "[" + parseFloat(hit._score).toFixed(2) + "] " + hit._path;
     html += '    </a>';
     html += '  </div>';
     html += '  <div id="' + collapseId + '" class="collapse" role="tabpanel" aria-labelledby="' + headerId + '">';
