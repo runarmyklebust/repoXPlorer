@@ -500,12 +500,10 @@ var renderQueryHit = function (html, hit, itemNum) {
 
     html += '<div class="card">';
     html += '  <div class="card-header" role="tab" id="' + headerId + '">';
-    html += '    <a class="collapsed nav-link" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
+    html += '    <a class="collapsed" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
             '" aria-expanded="false" aria-controls="' + collapseId + '">';
     html += hit._path + " - (" + hit._score + ")";
     html += '    </a>';
-    //html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
-    //         '\')">Delete</button>';
     html += '  </div>';
     html += '  <div id="' + collapseId + '" class="collapse" role="tabpanel" aria-labelledby="' + headerId + '">';
     html += '   <div class="card-block">';
