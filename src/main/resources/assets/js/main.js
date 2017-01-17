@@ -36,7 +36,7 @@ $(function () {
     model.selectors.repo.change(function () {
         model.selectors.repo.trigger(EVENT_REPO_DISCONNECTED);
         setChangeRepoLayout();
-        getRepoInfo(this.value);
+        getRepoInfo(this.value, model.selectors.branch);
     });
 
     model.selectors.branch.change(function () {
@@ -68,8 +68,11 @@ function initializeModel() {
     model.buttons.createRepo = $('#createRepoButton');
     model.buttons.createBranch = $('#createBranchButton');
     model.buttons.deleteRepo = $('#deleteRepoButton');
-    model.buttons.deleteRepoConfirm = $('#deleteConfirmButton');
-    model.buttons.deleteRepoConfirmCancel = $('#deleteConfirmCancelButton');
+    model.buttons.deleteBranch = $('#deleteBranchButton');
+    model.buttons.deleteRepoConfirm = $('#deleteRepoConfirmButton');
+    model.buttons.deleteBranchConfirm = $('#deleteBranchConfirmButton');
+    model.buttons.deleteRepoConfirmCancel = $('#deleteRepoConfirmCancelButton');
+    model.buttons.deleteBranchConfirmCancel = $('#deleteBranchConfirmCancelButton');
 
     model.inputs.createRepo = $('#createRepoId');
     model.inputs.createBranch = $('#createBranchInput');
@@ -82,17 +85,22 @@ function initializeModel() {
     model.selectors.repo = $('#selectRepoId');
     model.selectors.branch = $('#selectBranchId');
     model.selectors.deleteRepo = $('#deleteRepoSelector');
+    model.selectors.deleteBranch = $('#deleteBranchSelector');
+    model.selectors.deleteBranchRepo = $('#deleteBranchRepoSelector');
     model.selectors.createBranch = $('#createBranchSelector');
 
-    model.links.deleteRepo = $('#deleteModalOpen');
+    model.links.deleteRepo = $('#deleteRepoModalOpen');
+    model.links.deleteBranch = $('#deleteBranchModalOpen');
     model.links.createBranch = $('#createBranchModalOpen');
     model.links.createRepo = $('#createRepoModalOpen');
 
     model.modals.deleteRepo = $('#deleteRepoModal');
+    model.modals.deleteBranch = $('#deleteBranchModal');
     model.modals.createBranch = $('#createBranchModal');
     model.modals.createRepo = $('#createRepoModal');
 
-    model.parts.deleteRepoConfirm = $('#deleteConfirm');
+    model.parts.deleteRepoConfirm = $('#deleteRepoConfirm');
+    model.parts.deleteBranchConfirm = $('#deleteBranchConfirm');
     model.parts.queryResult = $('#queryResultBox');
     model.parts.messageBox = $('#messageBox');
 }
@@ -146,6 +154,7 @@ function toggleFulltextMode() {
 function initDeleteModalDialog() {
 
     model.parts.deleteRepoConfirm.hide();
+    model.parts.deleteBranchConfirm.hide();
 
     model.modals.deleteRepo.on('shown.bs.modal', function () {
         enableElement(model.selectors.deleteRepo);
@@ -155,8 +164,26 @@ function initDeleteModalDialog() {
         model.selectors.deleteRepo.focus();
     });
 
+    model.modals.deleteBranch.on('shown.bs.modal', function () {
+        enableElement(model.selectors.deleteBranchRepo);
+        model.selectors.deleteBranch.val(null);
+        model.parts.deleteBranchConfirm.hide();
+        disableButton(model.buttons.deleteBranch);
+        getRepoList(model.selectors.deleteBranchRepo);
+        model.selectors.deleteBranchRepo.focus();
+    });
+
     model.selectors.deleteRepo.change(function () {
         enabledButton(model.buttons.deleteRepo);
+    });
+
+    model.selectors.deleteBranchRepo.change(function () {
+        enableElement(model.selectors.deleteBranch);
+        getRepoInfo(this.value, model.selectors.deleteBranch);
+    });
+
+    model.selectors.deleteBranch.change(function () {
+        enabledButton(model.buttons.deleteBranch);
     });
 
     model.buttons.deleteRepo.click(function () {
@@ -178,9 +205,37 @@ function initDeleteModalDialog() {
         });
     });
 
+    model.buttons.deleteBranch.click(function () {
+
+        console.log("Clicking delete branch");
+
+        var selectedRepo = model.selectors.deleteBranchRepo.val();
+        var data = {
+            repoId: selectedRepo
+        };
+        jQuery.ajax({
+            url: repoInfoService,
+            cache: false,
+            type: 'GET',
+            data: data,
+            success: function (result) {
+                //renderDeleteConfirmMessage($(DELETE_CONFIRM_MESSAGE), result);
+                model.parts.deleteBranchConfirm.show();
+                disableButton(model.buttons.deleteBranch);
+                disableElement(model.selectors.deleteBranch);
+            }
+        });
+    });
+
+
     model.buttons.deleteRepoConfirm.click(function () {
         deleteRepo();
         model.parts.deleteRepoConfirm.hide();
+    });
+
+    model.buttons.deleteBranchConfirm.click(function () {
+        deleteBranch();
+        model.parts.deleteBranchConfirm.hide();
     });
 
     model.buttons.deleteRepoConfirmCancel.click(function () {
@@ -220,24 +275,6 @@ function renderDeleteConfirmMessage(element, result) {
     html += "</ul>";
 
     element.html(html);
-}
-
-function togglePanel(name) {
-    panels.forEach(function (panel) {
-        if (panel === "#" + name) {
-            $(panel).show();
-        } else {
-            $(panel).hide();
-        }
-    });
-}
-
-function activateNavbar() {
-    $(".navbar a").on("click", function () {
-
-        $(".nav").find(".active").removeClass("active");
-        $(this).parent().addClass("active");
-    });
 }
 
 var initializeView = function () {
@@ -288,7 +325,7 @@ var getRepoList = function (renderer) {
     });
 };
 
-var getRepoInfo = function (id) {
+var getRepoInfo = function (id, branchSelector) {
     var data = {
         repoId: id
     };
@@ -299,7 +336,7 @@ var getRepoInfo = function (id) {
         type: 'GET',
         data: data,
         success: function (result) {
-            renderBranchList(result, model.selectors.branch);
+            renderBranchList(result, branchSelector);
         }
     });
 };
@@ -338,8 +375,6 @@ function createBranch() {
         branchId: branchId
     };
 
-    console.log("Data create branch: ", data);
-
     jQuery.ajax({
         url: createBranchServiceUrl,
         cache: false,
@@ -367,9 +402,32 @@ function deleteRepo() {
         type: 'POST',
         success: function (result) {
             model.modals.deleteRepo.modal('hide');
-            setStartLayout();
+            renderMessage(result);
         }
     });
+}
+
+
+function deleteBranch() {
+    var repoId = model.selectors.deleteBranchRepo.find(":selected").text();
+    var branchId = model.selectors.deleteBranch.val();
+
+    var data = {
+        repoId: repoId,
+        branchId: branchId
+    };
+
+    jQuery.ajax({
+        url: deleteBranchServiceUrl,
+        cache: false,
+        data: data,
+        type: 'POST',
+        success: function (result) {
+            model.modals.deleteBranch.modal('hide');
+            renderMessage(result);
+        }
+    });
+
 }
 
 function doQuery() {
@@ -483,7 +541,6 @@ function renderQueryMetaData(html, queryResult) {
     return html;
 }
 
-
 var renderQueryHits = function (html, result) {
 
     var i = 0;
@@ -500,10 +557,12 @@ var renderQueryHit = function (html, hit, itemNum) {
 
     html += '<div class="card">';
     html += '  <div class="card-header" role="tab" id="' + headerId + '">';
-    html += '    <a class="collapsed" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
+    html += '    <a class="collapsed nav-link" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
             '" aria-expanded="false" aria-controls="' + collapseId + '">';
     html += "[" + parseFloat(hit._score).toFixed(2) + "] " + hit._path;
     html += '    </a>';
+    //html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
+    //         '\')">Delete</button>';
     html += '  </div>';
     html += '  <div id="' + collapseId + '" class="collapse" role="tabpanel" aria-labelledby="' + headerId + '">';
     html += '   <div class="card-block">';
