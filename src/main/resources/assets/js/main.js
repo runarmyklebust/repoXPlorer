@@ -367,7 +367,7 @@ function deleteRepo() {
         type: 'POST',
         success: function (result) {
             model.modals.deleteRepo.modal('hide');
-            renderMessage(result);
+            setStartLayout();
         }
     });
 }
