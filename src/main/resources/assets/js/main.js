@@ -201,6 +201,7 @@ function initDeleteModalDialog() {
                 model.parts.deleteRepoConfirm.show();
                 disableButton(model.buttons.deleteRepo);
                 disableElement(model.selectors.deleteRepo);
+                setStartLayout();
             }
         });
     });
@@ -219,10 +220,10 @@ function initDeleteModalDialog() {
             type: 'GET',
             data: data,
             success: function (result) {
-                //renderDeleteConfirmMessage($(DELETE_CONFIRM_MESSAGE), result);
                 model.parts.deleteBranchConfirm.show();
                 disableButton(model.buttons.deleteBranch);
                 disableElement(model.selectors.deleteBranch);
+                setStartLayout();
             }
         });
     });
@@ -544,6 +545,7 @@ function renderQueryMetaData(html, queryResult) {
 var renderQueryHits = function (html, result) {
 
     var i = 0;
+
     result.hits.forEach(function (hit) {
         html = renderQueryHit(html, hit, i++);
     });
@@ -559,8 +561,9 @@ var renderQueryHit = function (html, hit, itemNum) {
     html += '  <div class="card-header" role="tab" id="' + headerId + '">';
     html += '    <a class="collapsed nav-link" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
             '" aria-expanded="false" aria-controls="' + collapseId + '">';
-    html += "[" + parseFloat(hit._score).toFixed(2) + "] " + hit._path;
+    html += hit._path;
     html += '    </a>';
+    html += "<span class='rightAlign'> [" + parseFloat(hit._score).toFixed(2) + "]</span> ";
     //html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
     //         '\')">Delete</button>';
     html += '  </div>';

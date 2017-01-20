@@ -23,21 +23,20 @@ exports.post = function (req) {
     }
 
     try {
-        contextLib.run({
-            repository: repoId
-        }, function () {
-            var result = repoLib.createBranch({
-                branchId: branchId
-            });
-            log.info('Branch [' + result.id + '] created');
-        })
+        var result = repoLib.createBranch({
+            repoId: repoId,
+            branchId: branchId
+        });
+        log.info('Branch [' + result.id + '] created');
     }
-    catch
-        (e) {
+    catch (e) {
+        log.info("Render error: " + e);
+
         if (e.code == 'branchAlreadyExists') {
-            renderError('Branch [features-branch] already exist');
+            return renderError('Branch [features-branch] already exist');
         } else {
-            renderError('Unexpected error: ' + e.message);
+            log.info("Render unexpected: " + e);
+            return renderError('Error: ' + e);
         }
     }
 
