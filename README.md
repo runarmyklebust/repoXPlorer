@@ -1,8 +1,10 @@
 # repoXPlorer
 
-The repoXPlorer is a tool for querying and managing Enonic XP repositories and branches.
-Uses boostrap4 which seems to have some issues in Firefox, so Chrome is recommended.
+The repoXPlorer is a tool for querying and managing Enonic XP repositories.
 
+
+
+_Bootstrap4 seems to have som issues in Firefox, so Chrome is recommended._
 
 
 ## Releases and Compatibility
