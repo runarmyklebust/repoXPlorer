@@ -563,7 +563,7 @@ var renderQueryHit = function (html, hit, itemNum) {
             '" aria-expanded="false" aria-controls="' + collapseId + '">';
     html += hit._path;
     html += '    </a>';
-    html += "<span class='rightAlign'> [" + parseFloat(hit._score).toFixed(2) + "]</span> ";
+    html += "<span class='rightAlign score'> [score: " + parseFloat(hit._score).toFixed(2) + "]</span> ";
     //html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
     //         '\')">Delete</button>';
     html += '  </div>';

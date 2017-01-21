@@ -1,8 +1,8 @@
-package me.myklebust.repo.xplorer.autocomplete;
+package me.myklebust.enonic.repoxplorer.autocomplete;
 
-import me.myklebust.repo.xplorer.autocomplete.context.ProducerContext;
-import me.myklebust.repo.xplorer.autocomplete.mapper.AutocompleteResultMapper;
-import me.myklebust.repo.xplorer.autocomplete.producers.SuggestionProducers;
+import me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext;
+import me.myklebust.enonic.repoxplorer.autocomplete.mapper.AutocompleteResultMapper;
+import me.myklebust.enonic.repoxplorer.autocomplete.producers.SuggestionProducers;
 
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;

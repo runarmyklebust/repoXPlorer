@@ -1,4 +1,4 @@
-package me.myklebust.repo.xplorer.autocomplete.producers;
+package me.myklebust.enonic.repoxplorer.autocomplete.producers;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,16 +7,19 @@ import org.osgi.service.component.annotations.Component;
 
 import com.google.common.collect.Lists;
 
-import me.myklebust.repo.xplorer.autocomplete.SuggestionProducer;
-import me.myklebust.repo.xplorer.autocomplete.context.ProducerContext;
+import me.myklebust.enonic.repoxplorer.autocomplete.SuggestionProducer;
+import me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext;
 
 @Component
-public class FunctionProducer
+public class SystemFieldProducer
     extends AbstractProducer
     implements SuggestionProducer
-{
-    private List<String> suggestions = Lists.newArrayList( "fulltext('", "ngram('", "pathMatch('", "range('" );
 
+{
+
+    private List<String> suggestions =
+        Lists.newArrayList( "_allText", "_name", "_parentPath", "_path", "_id", "_reference", "_timestamp", "_versionKey",
+                            "_manualordervalue" );
 
     @Override
     protected Collection<String> getSuggestionEntries()
@@ -27,7 +30,7 @@ public class FunctionProducer
     @Override
     public String name()
     {
-        return "Functions";
+        return "SystemField";
     }
 
     @Override
@@ -35,5 +38,4 @@ public class FunctionProducer
     {
         return doMatch( term, context );
     }
-
 }

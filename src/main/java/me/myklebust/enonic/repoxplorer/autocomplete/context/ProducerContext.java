@@ -1,4 +1,4 @@
-package me.myklebust.repo.xplorer.autocomplete.context;
+package me.myklebust.enonic.repoxplorer.autocomplete.context;
 
 public enum ProducerContext
 {

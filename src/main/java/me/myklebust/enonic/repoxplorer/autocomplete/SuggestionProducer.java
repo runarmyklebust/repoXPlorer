@@ -1,8 +1,8 @@
-package me.myklebust.repo.xplorer.autocomplete;
+package me.myklebust.enonic.repoxplorer.autocomplete;
 
 import java.util.List;
 
-import me.myklebust.repo.xplorer.autocomplete.context.ProducerContext;
+import me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext;
 
 public interface SuggestionProducer
 {

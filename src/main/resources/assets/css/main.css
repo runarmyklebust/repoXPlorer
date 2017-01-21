@@ -1,5 +1,13 @@
 html {
     overflow-y: scroll;
+
+}
+
+body {
+}
+
+.repoNavbar {
+    background-color: #22526b;
 }
 
 /* The alert message box */
@@ -28,8 +36,17 @@ html {
     margin-bottom: 0em;
 }
 
+.score {
+    color: #aaa;
+    font-size: 0.8em;
+}
+
 main {
-    margin-top: 70px;
+
+}
+
+.belowNav {
+    margin-top: 65px;
 }
 
 .col-fixed-400 {
@@ -40,6 +57,8 @@ main {
     height: 100%;
     box-shadow: lightgray 2px 2px 2px;
     z-index: 100;
+    color: black;
+    background-color: white;
 }
 
 .query-panel .col-offset-400 {

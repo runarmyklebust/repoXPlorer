@@ -1,4 +1,4 @@
-package me.myklebust.repo.xplorer.autocomplete;
+package me.myklebust.enonic.repoxplorer.autocomplete;
 
 import com.enonic.xp.query.parser.QueryParser;
 

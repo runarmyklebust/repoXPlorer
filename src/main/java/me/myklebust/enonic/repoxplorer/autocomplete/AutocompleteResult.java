@@ -1,4 +1,4 @@
-package me.myklebust.repo.xplorer.autocomplete;
+package me.myklebust.enonic.repoxplorer.autocomplete;
 
 import java.util.Collection;
 import java.util.List;

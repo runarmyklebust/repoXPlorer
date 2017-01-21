@@ -1,4 +1,4 @@
-var bean = __.newBean('me.myklebust.repo.xplorer.autocomplete.AutocompleterBean');
+var bean = __.newBean('me.myklebust.enonic.repoxplorer.autocomplete.AutocompleterBean');
 
 
 exports.execute = function (term, fullValue) {

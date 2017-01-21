@@ -1,11 +1,11 @@
-package me.myklebust.repo.xplorer.autocomplete.producers;
+package me.myklebust.enonic.repoxplorer.autocomplete.producers;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import me.myklebust.repo.xplorer.autocomplete.context.ProducerContext;
+import me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext;
 
 public abstract class AbstractProducer
 {

@@ -46,7 +46,7 @@
 
 
 <!-- Top -->
-<nav class="navbar navbar-fixed-top navbar-dark bg-primary">
+<nav class="navbar navbar-fixed-top navbar-dark repoNavbar">
     <form class="form-inline float-xs-left">
         <select id="selectRepoId" class="custom-select" selected>Choose repository</select>
         <select id="selectBranchId" class="custom-select" selected>Choose branch</select>
@@ -74,41 +74,45 @@
     <!-- QUERY PANEL -->
     <div id="queryPanel" class="query-panel container-fluid">
         <!-- Query input -->
+
         <div class="col-fixed-400">
-            <form id="queryForm" action="#">
-                <div class="form-group">
-                    <label for="fulltextSearch">fulltext/ngram-search</label>
-                    <textarea id="fulltextSearch" class="form-control queryInput" placeholder="<start typing>"></textarea>
-                </div>
+            <div class="belowNav">
+                <form id="queryForm" action="#">
+                    <div class="form-group">
+                        <label for="fulltextSearch">fulltext/ngram-search</label>
+                        <textarea id="fulltextSearch" class="form-control queryInput" placeholder="<start typing>"></textarea>
+                    </div>
 
-                <hr/>
+                    <hr/>
 
-                <div class="form-group">
-                    <label for="queryInput">query-expression</label>
-                    <textarea id="queryInput" class="form-control queryInput" placeholder="<query expr>"></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="queryInput">query-expression</label>
+                        <textarea id="queryInput" class="form-control queryInput" placeholder="<query expr>"></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="querySortInput">orderExpr</label>
-                    <input id="querySortInput" type="text" class="form-control" placeholder="<order expr>">
+                    <div class="form-group">
+                        <label for="querySortInput">orderExpr</label>
+                        <input id="querySortInput" type="text" class="form-control" placeholder="<_score desc>">
 
-                    <label for="queryCountInput">count</label>
-                    <input id="queryCountInput" type="text" value="15" class="form-control">
+                        <label for="queryCountInput">count</label>
+                        <input id="queryCountInput" type="text" value="15" class="form-control">
 
-                    <label for="queryStart">start</label>
-                    <input id="queryStart" type="text" value="0" class="form-control">
-                </div>
+                        <label for="queryStart">start</label>
+                        <input id="queryStart" type="text" value="0" class="form-control">
+                    </div>
 
-                <div class="form-group">
-                    <button type="button" id="queryButton" class="form-control btn btn-success">doQuery</button>
-                </div>
-            </form>
+                    <div class="form-group">
+                        <button type="button" id="queryButton" class="form-control btn btn-success">doQuery</button>
+                    </div>
+                </form>
+            </div>
         </div>
-
         <!-- Query result -->
         <div class="col-md-12 col-offset-400">
-            <div id="repoInfoBox"></div>
-            <div id="queryResultBox"></div>
+            <div class="belowNav">
+                <div id="repoInfoBox"></div>
+                <div id="queryResultBox"></div>
+            </div>
         </div>
     </div>
 
@@ -162,8 +166,7 @@
                         <select id="createBranchSelector" class="custom-select" selected>Choose repository</select>
                     </div>
                     <div class="form-group">
-                        <label for="createBranchInput">Branch id: </label>
-                        <input id="createBranchInput" type="text">
+                        <input id="createBranchInput" type="text" placeholder="Branch id"/>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -1,11 +1,11 @@
-package me.myklebust.repo.xplorer.autocomplete.context;
+package me.myklebust.enonic.repoxplorer.autocomplete.context;
 
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import static me.myklebust.repo.xplorer.autocomplete.context.ProducerContext.IN_FUNCTION_IS_FIELDNAME;
-import static me.myklebust.repo.xplorer.autocomplete.context.ProducerContext.IS_NEW_EXPRESSION;
+import static me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext.IN_FUNCTION_IS_FIELDNAME;
+import static me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext.IS_NEW_EXPRESSION;
 
 public class ContextResolver
 {

@@ -1,6 +1,6 @@
-package me.myklebust.repo.xplorer.autocomplete.mapper;
+package me.myklebust.enonic.repoxplorer.autocomplete.mapper;
 
-import me.myklebust.repo.xplorer.autocomplete.AutocompleteResult;
+import me.myklebust.enonic.repoxplorer.autocomplete.AutocompleteResult;
 
 import com.enonic.xp.script.serializer.MapGenerator;
 import com.enonic.xp.script.serializer.MapSerializable;
