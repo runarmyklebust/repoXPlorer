@@ -123,13 +123,13 @@ function initQueryModeListener() {
     model.inputs.fulltext.keyup(function () {
         delay(function () {
             toggleFulltextMode();
-        }, 200);
+        }, 10);
     });
 
     model.inputs.query.keyup(function () {
         delay(function () {
             toggleQueryMode();
-        }, 200);
+        }, 10);
     });
 }
 
@@ -584,7 +584,6 @@ var renderQueryHit = function (html, hit, itemNum) {
 var renderMessage = function (result) {
 
     var html = "";
-
     var timeOut = 2500;
 
     var errors = result.errors;
