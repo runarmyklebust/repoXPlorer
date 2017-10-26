@@ -10,6 +10,8 @@ import com.google.common.collect.Lists;
 import me.myklebust.enonic.repoxplorer.autocomplete.SuggestionProducer;
 import me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext;
 
+import com.enonic.xp.node.NodeIndexPath;
+
 @Component
 public class SystemFieldProducer
     extends AbstractProducer
@@ -17,9 +19,16 @@ public class SystemFieldProducer
 
 {
 
-    private List<String> suggestions =
-        Lists.newArrayList( "_allText", "_name", "_parentPath", "_path", "_id", "_reference", "_timestamp", "_versionKey",
-                            "_manualordervalue" );
+    private List<String> suggestions = Lists.newArrayList( NodeIndexPath.ALL_TEXT.getPath(), //
+                                                           NodeIndexPath.NAME.getPath(), //
+                                                           NodeIndexPath.PARENT_PATH.getPath(), //
+                                                           NodeIndexPath.PATH.getPath(),//
+                                                           NodeIndexPath.ID.getPath(), //
+                                                           NodeIndexPath.REFERENCE.getPath(), //
+                                                           NodeIndexPath.TIMESTAMP.getPath(), //
+                                                           NodeIndexPath.VERSION.getPath(), //
+                                                           NodeIndexPath.MANUAL_ORDER_VALUE.getPath() //
+    );
 
     @Override
     protected Collection<String> getSuggestionEntries()
