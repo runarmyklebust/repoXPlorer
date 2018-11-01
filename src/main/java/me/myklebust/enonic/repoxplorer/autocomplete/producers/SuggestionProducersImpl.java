@@ -12,6 +12,8 @@ import com.google.common.collect.Lists;
 import me.myklebust.enonic.repoxplorer.autocomplete.SuggestionProducer;
 import me.myklebust.enonic.repoxplorer.autocomplete.context.ProducerContext;
 
+import com.enonic.xp.web.handler.WebHandler;
+
 @Component(immediate = true)
 public class SuggestionProducersImpl
     implements SuggestionProducers
@@ -31,9 +33,16 @@ public class SuggestionProducersImpl
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-    public void register( final SuggestionProducer producer )
+    public void addSuggestionProducer( final SuggestionProducer producer )
     {
         this.producerList.add( producer );
     }
+
+
+    public void removeSuggestionProducer( final SuggestionProducer producer )
+    {
+        this.producerList.remove( producer );
+    }
+
 
 }
