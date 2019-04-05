@@ -1,26 +1,13 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-        maven {
-            url 'http://repo.enonic.com/public'
-        }
-    }
-
-    dependencies {
-        classpath 'com.enonic.gradle:gradle-defaults:1.0.1'
-        classpath "com.enonic.xp:gradle-plugin:${xpVersion}"
-    }
+plugins {
+    id 'com.enonic.xp.app' version '1.0.15'
 }
-
-apply plugin: 'com.enonic.xp.app'
-apply plugin: 'maven'
 
 app {
     name = project.appName
     displayName = project.displayName
     vendorName = 'Enonic AS'
     vendorUrl = 'http://enonic.com'
+    systemVersion = "${xpVersion}"
 }
 
 dependencies {
@@ -34,6 +21,8 @@ dependencies {
     include "com.enonic.xp:lib-mustache:${xpVersion}"
     include "com.enonic.xp:lib-io:${xpVersion}"
 
+    include 'com.enonic.lib:lib-cache:1.1.0'
+    
     //include "com.enonic.xp:lib-xslt:${xpVersion}"
     //include "com.enonic.xp:lib-i18n:${xpVersion}"
     //include "com.enonic.xp:lib-auth:${xpVersion}"
@@ -44,21 +33,9 @@ dependencies {
     //include "com.enonic.xp:lib-websocket:${xpVersion}"
 }
 
+
 repositories {
     mavenLocal()
     jcenter()
-    maven {
-        url 'http://repo.enonic.com/public'
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository( url: 'https://repo.enonic.com/public' ) {
-                authentication( userName: findProperty( 'repoUser' ),
-                                password: findProperty( 'repoPassword' ) )
-            }
-        }
-    }
+    xp.enonicRepo()
 }

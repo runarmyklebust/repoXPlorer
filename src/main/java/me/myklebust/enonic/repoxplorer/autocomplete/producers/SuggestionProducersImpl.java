@@ -31,9 +31,16 @@ public class SuggestionProducersImpl
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-    public void register( final SuggestionProducer producer )
+    public void addProducer( final SuggestionProducer producer )
     {
         this.producerList.add( producer );
     }
+
+    @SuppressWarnings("unused")
+    public void removeProducer( final SuggestionProducer producer )
+    {
+        this.producerList.remove( producer );
+    }
+
 
 }

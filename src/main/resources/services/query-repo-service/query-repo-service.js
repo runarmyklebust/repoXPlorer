@@ -1,5 +1,16 @@
 var nodeLib = require('/lib/xp/node');
 var contextLib = require('/lib/xp/context');
+var cacheLib = require('/lib/cache');
+
+var multiRepoConnectionCache = cacheLib.newCache({
+    size: 100,
+    expire: 3600
+});
+
+var repoConnectionCache = cacheLib.newCache({
+    size: 100,
+    expire: 3600
+});
 
 exports.get = function (req) {
 
@@ -16,7 +27,14 @@ exports.get = function (req) {
     var start = req.params.start ? req.params.start : 0;
     var sort = req.params.sort;
 
-    var repo = connect(repoId, branch);
+    var sources = [
+        {
+            repoId: repoId,
+            branch: branch,
+            principals: ["role:system.admin"]
+        }];
+
+    var repo = getMultiRepoConnection(sources);
 
     var queryStart = new Date().getTime();
 
@@ -25,11 +43,14 @@ exports.get = function (req) {
             query: query ? query : createFulltextQuery(fulltext),
             count: count,
             start: start,
-            sort: sort
+            sort: sort,
+            explain: true
         });
     } catch (err) {
         return returnError("Query failed: " + err);
     }
+
+    //log.info("REEEEESULT!!!!!: %s", JSON.stringify(result, null, 4));
 
     var queryEnd = new Date().getTime() - queryStart;
     var queryResult = createQueryResult(result, queryEnd, repo, start);
@@ -67,26 +88,31 @@ function createQueryResult(result, queryEnd, repo, start) {
 }
 
 function mapQueryHits(result, repo) {
+
     var entries = [];
     var errors = [];
+
     result.hits.forEach(function (hit) {
-        var node = repo.get(hit.id);
 
-        if (!node) {
-            var message = "Node found in search but not in storage: " + hit.id;
-            log.error(message);
-            errors.push(message);
-        } else {
-            var entry = {
-                _id: hit.id,
-                _score: hit.score,
-                _path: node._path,
-                node: node
-            };
+            //log.info("HIT: %s", JSON.stringify(hit, null, 2));
 
-            entries.push(entry);
-        }
+            var node = getRepoConnection(hit.repoId, hit.branch).get(hit.id);
 
+            if (!node) {
+                var message = "Node found in search but not in storage: " + hit.id;
+                log.error(message);
+                errors.push(message);
+            } else {
+                var entry = {
+                    _id: hit.id,
+                    _score: hit.score,
+                    _path: node._path,
+                    explain: hit.explanation,
+                    node: node
+                };
+
+                entries.push(entry);
+            }
         }
     );
 
@@ -96,7 +122,26 @@ function mapQueryHits(result, repo) {
     };
 }
 
-var connect = function (repoId, branch) {
+var getRepoConnection = function (repoId, branch) {
+    return repoConnectionCache.get({repoId: repoId, branch: branch}, function () {
+        return repoConnect(repoId, branch);
+    });
+};
+
+var getMultiRepoConnection = function (sources) {
+    return multiRepoConnectionCache.get(sources, function () {
+        return multiRepoConnect(sources);
+    });
+};
+
+var multiRepoConnect = function (sources) {
+
+    return nodeLib.multiRepoConnect({
+        sources: sources
+    });
+};
+
+var repoConnect = function (repoId, branch) {
     return nodeLib.connect({
         branch: branch,
         repoId: repoId
