@@ -33,7 +33,7 @@ body {
 }
 
 .navbar form {
-    margin-bottom: 0em;
+    margin-bottom: 0;
 }
 
 .score {
@@ -46,7 +46,7 @@ main {
 }
 
 .belowNav {
-    margin-top: 65px;
+    margin-top: 10px;
 }
 
 .col-fixed-400 {
@@ -64,10 +64,6 @@ main {
 .query-panel .col-offset-400 {
     padding-left: 450px;
     z-index: 0;
-}
-
-.query-panel .card {
-    margin-bottom: 0;
 }
 
 .queryInput {
@@ -89,7 +85,7 @@ main {
 }
 
 .textcomplete-dropdown li {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #fff;
     padding: 2px 5px;
 }
 
@@ -118,4 +114,36 @@ main {
 
 .rightAlign {
     float: right;
+}
+
+ul.queryResult {
+    padding: 0;
+    margin: 0;
+}
+
+.queryResult li {
+    list-style: none;
+}
+
+.resultHit {
+    width: 100%;
+}
+
+.resultHit .hitHeader {
+    margin: 8px 0;
+    padding: 4px 8px;
+    background: #eee;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.resultHit .hitHeader p {
+    font-size: 0.9em;
+    margin: 0;
+    text-align: left;
+}
+
+pre[class*="language-"] {
+    background: #fff; !important;
 }

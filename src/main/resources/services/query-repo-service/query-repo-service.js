@@ -2,15 +2,6 @@ var nodeLib = require('/lib/xp/node');
 var contextLib = require('/lib/xp/context');
 var cacheLib = require('/lib/cache');
 
-var multiRepoConnectionCache = cacheLib.newCache({
-    size: 100,
-    expire: 3600
-});
-
-var repoConnectionCache = cacheLib.newCache({
-    size: 100,
-    expire: 3600
-});
 
 exports.get = function (req) {
 
@@ -26,6 +17,12 @@ exports.get = function (req) {
     var count = req.params.count ? req.params.count : 25;
     var start = req.params.start ? req.params.start : 0;
     var sort = req.params.sort;
+    var explain = req.params.explain;
+
+    log.info("PARAMS: %s", JSON.stringify(req.params, null, 4));
+
+    var filter = req.params.filter ? JSON.parse(req.params.filter) : "";
+
 
     var sources = [
         {
@@ -39,13 +36,18 @@ exports.get = function (req) {
     var queryStart = new Date().getTime();
 
     try {
-        var result = repo.query({
+        var query = {
             query: query ? query : createFulltextQuery(fulltext),
             count: count,
             start: start,
             sort: sort,
-            explain: true
-        });
+            explain: explain,
+            filters: filter
+        };
+
+        log.info("QUERY: %s", JSON.stringify(query, null, 2));
+
+        var result = repo.query(query);
     } catch (err) {
         return returnError("Query failed: " + err);
     }
@@ -93,11 +95,9 @@ function mapQueryHits(result, repo) {
     var errors = [];
 
     result.hits.forEach(function (hit) {
-
             //log.info("HIT: %s", JSON.stringify(hit, null, 2));
 
             var node = getRepoConnection(hit.repoId, hit.branch).get(hit.id);
-
             if (!node) {
                 var message = "Node found in search but not in storage: " + hit.id;
                 log.error(message);
@@ -107,7 +107,7 @@ function mapQueryHits(result, repo) {
                     _id: hit.id,
                     _score: hit.score,
                     _path: node._path,
-                    explain: hit.explanation,
+                    explanation: hit.explanation,
                     node: node
                 };
 
@@ -123,19 +123,14 @@ function mapQueryHits(result, repo) {
 }
 
 var getRepoConnection = function (repoId, branch) {
-    return repoConnectionCache.get({repoId: repoId, branch: branch}, function () {
-        return repoConnect(repoId, branch);
-    });
+    return repoConnect(repoId, branch);
 };
 
 var getMultiRepoConnection = function (sources) {
-    return multiRepoConnectionCache.get(sources, function () {
-        return multiRepoConnect(sources);
-    });
+    return multiRepoConnect(sources);
 };
 
 var multiRepoConnect = function (sources) {
-
     return nodeLib.multiRepoConnect({
         sources: sources
     });

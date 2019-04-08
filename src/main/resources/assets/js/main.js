@@ -78,9 +78,11 @@ function initializeModel() {
     model.inputs.createBranch = $('#createBranchInput');
     model.inputs.fulltext = $('#fulltextSearch');
     model.inputs.query = $('#queryInput');
+    model.inputs.filter = $('#filterInput');
     model.inputs.count = $('#queryCountInput');
     model.inputs.start = $('#queryStart');
     model.inputs.order = $('#querySortInput');
+    model.inputs.explain = $('#explainInput');
 
     model.selectors.repo = $('#selectRepoId');
     model.selectors.branch = $('#selectBranchId');
@@ -440,6 +442,8 @@ function doQuery() {
     var count = model.inputs.count.val();
     var start = model.inputs.start.val();
     var sort = model.inputs.order.val();
+    var explain = model.inputs.explain.is(':checked');
+    var filter = model.inputs.filter.val();
 
     var data = {
         repoId: repoId,
@@ -448,7 +452,9 @@ function doQuery() {
         branch: branch,
         count: count,
         start: start,
-        sort: sort
+        sort: sort,
+        explain: explain,
+        filter: filter
     };
 
     jQuery.ajax({
@@ -519,9 +525,8 @@ var renderQueryResult = function (result, renderer) {
     var queryResult = result.queryResult;
 
     var html = "";
-    html = renderQueryMetaData(html, queryResult);
-
-    html = renderQueryHits(html, queryResult);
+    html += renderQueryMetaData(queryResult);
+    html += renderQueryHits(queryResult);
 
     renderer.html(html);
 
@@ -529,56 +534,122 @@ var renderQueryResult = function (result, renderer) {
     renderer.show();
 };
 
-function renderQueryMetaData(html, queryResult) {
+function renderQueryMetaData(queryResult) {
 
     var start = Number(queryResult.start);
     var count = Number(queryResult.count);
     var to = start + count;
     var from = start + 1;
 
+    var html = "";
+    html += '<div class="queryResultMeta">';
     html += "<p>QueryTime: " + queryResult.queryTime + "ms, FetchTime: " + queryResult.fetchTime + "ms</p>";
     html += "<p>Showing hits: " + from + "->" + to + " of " + queryResult.total + "</p>";
-
+    html += "</div>";
     return html;
 }
 
-var renderQueryHits = function (html, result) {
+var renderQueryHits = function (result) {
 
+    var html = '';
+    html += '<ul class="queryResult">';
     var i = 0;
-
     result.hits.forEach(function (hit) {
-        html = renderQueryHit(html, hit, i++);
+        html += renderQueryHit(hit, i++);
     });
+    html += "</ul>";
     return html;
 };
 
-var renderQueryHit = function (html, hit, itemNum) {
+var renderQueryHit = function (hit, itemNum) {
 
     var collapseId = "collapse-" + itemNum;
     var headerId = "header-" + itemNum;
 
-    html += '<div class="card">';
-    html += '  <div class="card-header" role="tab" id="' + headerId + '">';
-    html += '    <a class="collapsed nav-link" data-toggle="collapse" data-parent="#queryHitView" href="#' + collapseId +
-            '" aria-expanded="false" aria-controls="' + collapseId + '">';
-    html += hit._path;
-    html += '    </a>';
-    html += "<span class='rightAlign score'> [score: " + parseFloat(hit._score).toFixed(2) + "]</span> ";
-    //html += ' <button type="button" class="btn btn-danger btn-sm rightAlign" onclick="deleteNode(\'' + hit._id +
-    //         '\')">Delete</button>';
-    html += '  </div>';
-    html += '  <div id="' + collapseId + '" class="collapse" role="tabpanel" aria-labelledby="' + headerId + '">';
-    html += '   <div class="card-block">';
-    html += '     <pre>';
-    html += '       <code class="language-javascript">';
-    html += htmlEscape(JSON.stringify(hit.node, null, 4));
-    html += '      </code>';
-    html += '     </pre>';
-    html += '   </div>';
-    html += '  </div>';
-    html += '</div>';
+    var html = '';
+    html += '<li class="resultHit" hit="' + headerId + '" >';
+    html += renderHitHeader(hit, collapseId);
+    html += renderHitBody(hit, collapseId);
+    html += '</li>';
 
     return html;
+};
+
+var renderHitHeader = function (hit, collapseId) {
+
+    var html = "";
+    html +=
+        '  <a class="hitHeader btn" href="#' + collapseId + '" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="' +
+        collapseId + '">';
+    html += '   <p>' + hit._path + "</p>";
+    html += '   <p class="score">[score: ' + parseFloat(hit._score).toFixed(2) + "]</p>";
+    html += '  </a>';
+    return html;
+};
+
+var renderHitBody = function (hit, collapseId) {
+
+    var html = '';
+    html += '<div class="resultBody collapse" id="' + collapseId + '">';
+    html += renderHitWrapper(collapseId);
+    html += "<div class=\"tab-content\" id=\"nav-tabContent\">";
+    html += renderHitDataElement(createNodeDataModel(hit.node), "data", collapseId, true);
+    html += renderHitDataElement(hit.explanation, "explain", collapseId, false);
+    html += "</div>";
+    html += '</div>';
+    return html
+};
+
+var createNodeDataModel = function (node) {
+
+    return {
+        _name: node._name,
+        type: node.type,
+        displayName: node.displayName,
+        data: node.data
+    }
+};
+
+var renderHitWrapper = function (collapseId) {
+    var html = "";
+    html += '<ul class="nav nav-tabs" id="myTab" role="tablist">';
+    html += '  <li class="nav-item">';
+    html += '    <a class="nav-link active" aria-selected="true" role="tab" data-toggle="tab"' +
+            ' id="nav-tab-data' + collapseId + '" ' +
+            ' href="#data-' + collapseId + '" ' +
+            ' aria-controls="data-' + collapseId + '">Data</a>';
+    html += '  </li>';
+    html += '  <li class="nav-item">';
+    html += '    <a class="nav-link" aria-selected="false" role="tab" data-toggle="tab"' +
+            ' id="nav-tab-explain' + collapseId + '" ' +
+            ' href="#explain-' + collapseId + '" ' +
+            ' aria-controls="explain-' + collapseId + '">Explain</a>';
+    html += '  </li>';
+    html += '</ul>';
+    return html;
+};
+
+var renderHitDataElement = function (data, type, id, active) {
+
+    var activeClass = active ? " show active " : "";
+    var parentId = "nav-tab-" + type + id;
+    var elementId = type + "-" + id;
+
+    var html = "";
+    html += '<div role="tabpanel" class="tab-pane fade' + activeClass + '" ' +
+            ' aria-labelledby="' + parentId + '"' +
+            ' id="' + elementId + '">';
+    if (!data) {
+        html += "<p>No data</p>"
+    } else {
+        html += '<pre>';
+        html += ' <code class="language-javascript">';
+        html += htmlEscape(JSON.stringify(data, null, 4));
+        html += ' </code>';
+        html += '</pre>';
+    }
+    html += '</div>';
+    return html
 };
 
 var renderMessage = function (result) {

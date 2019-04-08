@@ -46,12 +46,12 @@
 
 
 <!-- Top -->
-<nav class="navbar navbar-fixed-top navbar-dark repoNavbar">
-    <form class="form-inline float-xs-left">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <form class="form-inline mr-auto">
         <select id="selectRepoId" class="custom-select" selected>Choose repository</select>
         <select id="selectBranchId" class="custom-select" selected>Choose branch</select>
     </form>
-    <ul class="nav navbar-nav float-xs-right">
+    <ul class="nav my-2 my-rg-2">
         <li class="nav-item">
             <a class="nav-link active" href="#" id="createRepoModalOpen" data-toggle="modal" data-target="#createRepoModal">Create Repo</a>
         </li>
@@ -91,8 +91,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="queryExplainInput">explain (score explanation)</label>
-                        <input id="queryExplainInput" type="checkbox" class="form-control">
+                        <label for="filterInput">filter-expression</label>
+                        <textarea id="filterInput" class="form-control queryInput" placeholder="<filter expr>"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="explainInput">explain (score explanation)</label>
+                        <input id="explainInput" type="checkbox" class="form-control">
 
                         <label for="querySortInput">orderExpr</label>
                         <input id="querySortInput" type="text" class="form-control" placeholder="<_score desc>">
