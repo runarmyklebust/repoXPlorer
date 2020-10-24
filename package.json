@@ -1,0 +1,30 @@
+{
+  "name": "repoXPlorer",
+  "version": "1.0.0",
+  "description": "The repoXPlorer is a tool for querying and managing Enonic XP repositories.",
+  "main": "index.js",
+  "scripts": {
+    "watch": "babel ./src/main/resources -x \".es6\" --out-dir ./src/main/resources -w",
+    "build": "babel ./src/main/resources -x \".es6\" --out-dir ./src/main/resources",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trondeh80/repoXPlorer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trondeh80/repoXPlorer/issues"
+  },
+  "homepage": "https://github.com/trondeh80/repoXPlorer#readme",
+  "dependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.10.1",
+    "@babel/plugin-proposal-optional-chaining": "^7.10.1",
+    "@babel/preset-env": "^7.10.2"
+  }
+}

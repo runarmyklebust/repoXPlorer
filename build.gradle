@@ -20,14 +20,13 @@ dependencies {
     include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.xp:lib-repo:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
-    include "com.enonic.lib:lib-mustache:2.0.0-A1"
+    include "com.github.tineikt:xp-lib-freemarker:1.1.6"
     include "com.enonic.xp:lib-io:${xpVersion}"
 }
 
 repositories {
     mavenLocal()
     jcenter()
-    maven {
-        url 'http://repo.enonic.com/public'
-    }
+    xp.enonicRepo()
+    maven { url 'https://jitpack.io' }
 }
