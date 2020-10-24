@@ -27,5 +27,5 @@ export function get() {
 function getServiceUrl(name) {
     return portal.serviceUrl({
         service: name
-    })
+    });
 }
