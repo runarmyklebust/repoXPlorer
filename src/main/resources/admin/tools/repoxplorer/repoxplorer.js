@@ -7,16 +7,17 @@ exports.get = get;
 
 var _freemarker = require("/site/lib/tineikt/freemarker");
 
-var portal = require('/lib/xp/portal');
+var _portal = require("/lib/xp/portal");
+
+var viewFile = 'repoxplorer.html';
 
 function get() {
-  var view = resolve('repoxplorer.html');
   var model = {
-    jsUrl: portal.assetUrl({
-      path: "/js/main.js"
+    jsUrl: (0, _portal.assetUrl)({
+      path: '/js/main.js'
     }),
-    assetsUrl: portal.assetUrl({
-      path: ""
+    assetsUrl: (0, _portal.assetUrl)({
+      path: ''
     }),
     repoLoaderService: getServiceUrl('repo-loader-service'),
     repoInfoService: getServiceUrl('repo-info-service'),
@@ -31,12 +32,12 @@ function get() {
   };
   return {
     contentType: 'text/html',
-    body: (0, _freemarker.render)(view, model)
+    body: (0, _freemarker.render)(resolve(viewFile), model)
   };
 }
 
 function getServiceUrl(name) {
-  return portal.serviceUrl({
+  return (0, _portal.serviceUrl)({
     service: name
   });
 }

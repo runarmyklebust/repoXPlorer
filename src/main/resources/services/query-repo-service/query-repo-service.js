@@ -11,6 +11,7 @@ exports.get = function (req) {
 
     var query = req.params.queryString ? req.params.queryString : "";
     var fulltext = req.params.fulltext ? req.params.fulltext : "";
+    var filter = req.params.filter ? req.params.filter : "";
     var branch = req.params.branch ? req.params.branch : 'master';
     var count = req.params.count ? req.params.count : 25;
     var start = req.params.start ? req.params.start : 0;
@@ -23,6 +24,7 @@ exports.get = function (req) {
     try {
         var result = repo.query({
             query: query ? query : createFulltextQuery(fulltext),
+            filters: filter ? JSON.parse(filter) : null,
             count: count,
             start: start,
             sort: sort

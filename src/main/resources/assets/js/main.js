@@ -78,6 +78,7 @@ function initializeModel() {
     model.inputs.createBranch = $('#createBranchInput');
     model.inputs.fulltext = $('#fulltextSearch');
     model.inputs.query = $('#queryInput');
+    model.inputs.filter = $('#filterInput');
     model.inputs.count = $('#queryCountInput');
     model.inputs.start = $('#queryStart');
     model.inputs.order = $('#querySortInput');
@@ -207,9 +208,6 @@ function initDeleteModalDialog() {
     });
 
     model.buttons.deleteBranch.click(function () {
-
-        console.log("Clicking delete branch");
-
         var selectedRepo = model.selectors.deleteBranchRepo.val();
         var data = {
             repoId: selectedRepo
@@ -248,7 +246,6 @@ function initDeleteModalDialog() {
 }
 
 function initCreateBranchModalDialog() {
-
     model.modals.createBranch.on('shown.bs.modal', function () {
         getRepoList(model.selectors.createBranch);
         model.selectors.createBranch.focus();
@@ -256,14 +253,12 @@ function initCreateBranchModalDialog() {
 }
 
 function initCreateRepoModalDialog() {
-
     model.modals.createRepo.on('shown.bs.modal', function () {
         model.inputs.createRepo.focus();
     })
 }
 
 function renderDeleteConfirmMessage(element, result) {
-
     var repoInfo = result.repoInfo;
     var branchInfo = repoInfo.branchInfo;
 
@@ -435,6 +430,7 @@ function doQuery() {
 
     var queryString = model.inputs.query.val();
     var fulltext = model.inputs.fulltext.val();
+    var filter = model.inputs.filter.val();
     var repoId = model.selectors.repo.find(":selected").text();
     var branch = model.selectors.branch.val();
     var count = model.inputs.count.val();
@@ -444,6 +440,7 @@ function doQuery() {
     var data = {
         repoId: repoId,
         queryString: queryString,
+        filter: filter,
         fulltext: fulltext,
         branch: branch,
         count: count,
