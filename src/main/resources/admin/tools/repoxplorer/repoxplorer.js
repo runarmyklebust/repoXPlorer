@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.get = get;
 
-var _freemarker = require("/site/lib/tineikt/freemarker");
+var _thymeleaf = require("/lib/thymeleaf");
 
 var _portal = require("/lib/xp/portal");
 
@@ -32,7 +32,7 @@ function get() {
   };
   return {
     contentType: 'text/html',
-    body: (0, _freemarker.render)(resolve(viewFile), model)
+    body: (0, _thymeleaf.render)(resolve(viewFile), model)
   };
 }
 

@@ -1,4 +1,4 @@
-import { render } from '/site/lib/tineikt/freemarker';
+import { render } from '/lib/thymeleaf';
 import { assetUrl, serviceUrl } from '/lib/xp/portal';
 
 const viewFile = 'repoxplorer.html';
