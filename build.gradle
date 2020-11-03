@@ -20,14 +20,12 @@ dependencies {
     include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.xp:lib-repo:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
-    include "com.enonic.lib:lib-mustache:2.0.0-A1"
+    include 'com.enonic.lib:lib-thymeleaf:2.0.0'
     include "com.enonic.xp:lib-io:${xpVersion}"
 }
 
 repositories {
     mavenLocal()
     jcenter()
-    maven {
-        url 'http://repo.enonic.com/public'
-    }
+    xp.enonicRepo()
 }

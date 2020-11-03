@@ -1,24 +1,11 @@
-"use strict";
+import { render } from '/lib/thymeleaf';
+import { assetUrl, serviceUrl } from '/lib/xp/portal';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.get = get;
-
-var _thymeleaf = require("/lib/thymeleaf");
-
-var _portal = require("/lib/xp/portal");
-
-var viewFile = 'repoxplorer.html';
-
-function get() {
-  var model = {
-    jsUrl: (0, _portal.assetUrl)({
-      path: '/js/main.js'
-    }),
-    assetsUrl: (0, _portal.assetUrl)({
-      path: ''
-    }),
+const viewFile = 'repoxplorer.html';
+export function get() {
+  const model = {
+    jsUrl: assetUrl({ path: '/js/main.js' }),
+    assetsUrl: assetUrl({ path: '' }),
     repoLoaderService: getServiceUrl('repo-loader-service'),
     repoInfoService: getServiceUrl('repo-info-service'),
     deleteRepoServiceUrl: getServiceUrl('delete-repo-service'),
@@ -30,14 +17,15 @@ function get() {
     deleteNodeServiceUrl: getServiceUrl('delete-node-service'),
     deleteBranchServiceUrl: getServiceUrl('delete-branch-service')
   };
+
   return {
     contentType: 'text/html',
-    body: (0, _thymeleaf.render)(resolve(viewFile), model)
+    body: render(resolve(viewFile), model)
   };
 }
 
 function getServiceUrl(name) {
-  return (0, _portal.serviceUrl)({
+  return serviceUrl({
     service: name
   });
 }

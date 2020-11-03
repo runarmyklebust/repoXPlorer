@@ -59,6 +59,7 @@ main {
     z-index: 100;
     color: black;
     background-color: white;
+    overflow-y: scroll;
 }
 
 .query-panel .col-offset-400 {

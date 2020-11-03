@@ -25,9 +25,14 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+.enonic
+
 ### Gradle ###
 .gradle
 build/
+
+## npm
+node_modules
 
 # Ignore Gradle GUI config
 gradle-app.setting
